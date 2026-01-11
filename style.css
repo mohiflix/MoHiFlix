@@ -1,5 +1,5 @@
 /* =========================================
-   MoHiFlix Premium Style Sheet
+   MoHiFlix Premium & Final Style Sheet
    ========================================= */
 
 /* General Reset */
@@ -35,27 +35,14 @@ header {
     letter-spacing: 1px;
 }
 
-/* Genre Dropdown & Search Box */
-#genreSelect { 
+/* Search & Genre */
+#genreSelect, .search-box input { 
     background: #1a1a1a; 
     color: white; 
     border: 1px solid #333; 
-    padding: 8px 12px; 
+    padding: 10px 15px; 
     border-radius: 5px; 
     outline: none;
-    cursor: pointer;
-}
-
-.search-box { display: flex; }
-.search-box input { 
-    padding: 10px 15px; 
-    width: 200px; 
-    border: none; 
-    background: #1a1a1a; 
-    color: white; 
-    border-radius: 5px 0 0 5px; 
-    border: 1px solid #333;
-    border-right: none;
 }
 #searchBtn { 
     padding: 10px 20px; 
@@ -65,11 +52,9 @@ header {
     border-radius: 0 5px 5px 0; 
     cursor: pointer; 
     font-weight: bold;
-    transition: 0.3s;
 }
-#searchBtn:hover { background: #b20710; }
 
-/* Filter Bar (Movies vs TV) */
+/* Filter Bar */
 .filter-bar { 
     display: flex; 
     justify-content: center; 
@@ -84,19 +69,27 @@ header {
     cursor: pointer; 
     border-radius: 30px; 
     font-weight: bold; 
-    transition: 0.3s ease; 
 }
-.filter-bar button.active { 
-    background: #e50914; 
-    box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+.filter-bar button.active { background: #e50914; }
+
+/* Special Hindi Dubbed Horizontal Row */
+.movie-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px 5%;
+    scrollbar-width: thin;
+    scrollbar-color: #e50914 #000;
 }
+.movie-row::-webkit-scrollbar { height: 6px; }
+.movie-row::-webkit-scrollbar-thumb { background: #e50914; border-radius: 10px; }
 
 /* Movie Grid Layout */
-#movies, #relatedMovies { 
+#movies { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
     gap: 25px; 
-    padding: 0 5% 40px; 
+    padding: 20px 5% 40px; 
 }
 
 /* Movie Card Design */
@@ -104,24 +97,32 @@ header {
     background: #111; 
     border-radius: 12px; 
     overflow: hidden; 
-    transition: all 0.3s ease; 
+    transition: 0.3s ease; 
     border: 1px solid #222; 
     cursor: pointer; 
     text-align: center;
     position: relative;
+    min-width: 180px; /* Horizontal row er jonno */
 }
 .movie-card:hover { 
     transform: translateY(-10px); 
     border-color: #e50914; 
-    box-shadow: 0 10px 25px rgba(229, 9, 20, 0.3);
 }
-.movie-card img { 
-    width: 100%; 
-    height: 270px; 
-    object-fit: cover; 
-}
+.movie-card img { width: 100%; height: 270px; object-fit: cover; }
 
-/* Movie/TV Type Badge */
+/* Badges */
+.hindi-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #f1c40f;
+    color: black;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 4px;
+    z-index: 10;
+}
 .type-badge {
     position: absolute;
     top: 10px;
@@ -130,122 +131,28 @@ header {
     color: white;
     padding: 3px 8px;
     font-size: 10px;
-    font-weight: bold;
     border-radius: 4px;
-    text-transform: uppercase;
 }
 
-.movie-card h3 { 
-    font-size: 0.9rem; 
-    padding: 12px 10px 5px; 
-    margin: 0; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-}
-.movie-card p { 
-    color: #f1c40f; 
-    font-weight: bold; 
-    margin: 0; 
-    padding-bottom: 12px;
+/* Section Title */
+.section-title { 
+    padding: 0 5%; 
+    color: #e50914; 
+    font-size: 1.6rem; 
+    margin: 30px 0 10px;
+    border-left: 5px solid #e50914;
+    margin-left: 5%;
 }
 
-/* Pagination (Load More Button) */
-.pagination { 
-    text-align: center; 
-    padding: 40px 0; 
-}
-#loadMore { 
-    padding: 14px 40px; 
-    background: #e50914; 
-    color: white; 
-    border: none; 
-    cursor: pointer; 
-    font-weight: bold; 
-    border-radius: 8px; 
-    transition: 0.3s;
-}
-#loadMore:hover { background: #b20710; transform: scale(1.05); }
+/* Pagination & Footer */
+.pagination { text-align: center; padding: 40px 0; }
+#loadMore { padding: 14px 40px; background: #e50914; color: white; border: none; border-radius: 8px; cursor: pointer; }
+footer { background: #000; padding: 40px 5%; text-align: center; border-top: 1px solid #222; }
 
-/* Details Page Layout */
-.details-container { 
-    display: flex; 
-    flex-wrap: wrap; 
-    padding: 50px 5%; 
-    gap: 40px; 
-    justify-content: center; 
-}
-.details-container img { 
-    width: 320px; 
-    border-radius: 15px; 
-    box-shadow: 0 0 30px rgba(229, 9, 20, 0.4); 
-}
-.info { flex: 1; min-width: 300px; max-width: 700px; }
-.info h1 { font-size: 2.5rem; color: #e50914; margin-top: 0; }
-
-/* Player Wrapper */
-.player-wrapper {
-    margin-top: 20px;
-    border: 2px solid #222;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #000;
-}
-
-/* TV Episode Selector Styling */
-.episode-box {
-    background: #111;
-    padding: 25px;
-    margin: 20px 5%;
-    border-radius: 12px;
-    border: 1px solid #333;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-.episode-box h3 { color: #e50914; margin-bottom: 15px; }
-.selector-controls select {
-    background: #1a1a1a;
-    color: white;
-    padding: 12px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    margin: 8px;
-    width: 200px; /* Episode namer jonno boro kora hoyeche */
-    outline: none;
-    cursor: pointer;
-}
-#updatePlayer {
-    background: #e50914;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-#updatePlayer:hover { background: #b20710; transform: scale(1.05); }
-
-/* Footer Section */
-footer {
-    background: #000;
-    padding: 40px 5%;
-    text-align: center;
-    border-top: 1px solid #222;
-    margin-top: 50px;
-}
-footer p { margin: 5px 0; color: #bbb; }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-thumb { background: #e50914; border-radius: 10px; }
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-    #movies, #relatedMovies { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    header { flex-direction: column; gap: 15px; text-align: center; }
-    .search-box input { width: 160px; }
-    .details-container img { width: 280px; margin: 0 auto; }
-    .info h1 { font-size: 1.8rem; text-align: center; }
-    .selector-controls select { width: 90%; }
+    #movies { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    header { flex-direction: column; gap: 15px; }
+    .movie-card { min-width: 150px; }
+    .movie-card img { height: 220px; }
 }
