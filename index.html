@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoHiFlix - Hindi Dubbed & More</title>
+    <title>MoHiFlix - Movies & TV Shows</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.reload()">MoHiFlix</div>
+        <div class="logo" onclick="location.reload()" style="cursor:pointer">MoHiFlix</div>
         
         <select id="genreSelect">
             <option value="">All Genres</option>
@@ -20,7 +20,7 @@
         </select>
 
         <div class="search-box">
-            <input type="text" id="search" placeholder="Search Hindi Dubbed...">
+            <input type="text" id="search" placeholder="Search...">
             <button id="searchBtn">Search</button>
         </div>
     </header>
@@ -30,22 +30,11 @@
         <button onclick="changeType('tv')" id="tvBtn">TV Series</button>
     </div>
 
-    <div class="container">
-        <h2 class="section-title">Latest Hindi Dubbed Hollywood</h2>
-        <div id="hindiDubbed" class="movie-row"></div>
-
-        <h2 class="section-title">All Content</h2>
-        <main id="movies"></main>
-    </div>
+    <main id="movies"></main>
 
     <div class="pagination">
         <button id="loadMore">Load More</button>
     </div>
-
-    <footer>
-        <p>&copy; 2026 MoHiFlix. All Rights Reserved. Developed by <strong>MoHi</strong></p>
-        <p style="font-size: 12px; color: #666;">Streaming Hindi Dubbed Hollywood & Indian Content via Vidsrc.</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>
