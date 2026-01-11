@@ -12,21 +12,38 @@ async function getMovieDetails() {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}`);
         const movie = await res.json();
 
-        // SEO: Dynamic Title update
         document.title = `Watch ${movie.title || movie.name} Online - MoHiFlix`;
 
         detailsContainer.innerHTML = `
             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title || movie.name}">
             <div class="info">
                 <h1>${movie.title || movie.name}</h1>
-                <p>⭐ ${movie.vote_average.toFixed(1)} | ${movie.original_language.toUpperCase()}</p>
-                <p>${movie.overview}</p>
-                <div class="player-wrapper">
-                    <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
+                <p>⭐ ${movie.vote_average.toFixed(1)} | ${movie.original_language.toUpperCase()} | ${movie.release_date || movie.first_air_date}</p>
+                <p class="overview">${movie.overview}</p>
+                
+                <div id="playerPlaceholder" style="margin-top: 30px; text-align: center; background: #111; padding: 50px 20px; border-radius: 10px; border: 1px solid #333;">
+                    <button id="watchBtn" style="background: #e50914; color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 20px; box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4); transition: 0.3s;">
+                        ▶ Watch ${type === 'movie' ? 'Movie' : 'Series'} Now
+                    </button>
+                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Click to stream in HD Quality</p>
                 </div>
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
+
+                <div id="videoContainer" style="display: none; margin-top: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
+                    <iframe id="videoIframe" src="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
         `;
+
+        // ওয়াচ বাটন ক্লিক করলে ভিডিও লোড হবে
+        document.getElementById('watchBtn').onclick = function() {
+            const videoContainer = document.getElementById('videoContainer');
+            const placeholder = document.getElementById('playerPlaceholder');
+            const iframe = document.getElementById('videoIframe');
+
+            iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movie.id}`;
+            placeholder.style.display = 'none';
+            videoContainer.style.display = 'block';
+        };
 
         if (type === 'tv') {
             setupTVSelector(movie.number_of_seasons);
@@ -41,6 +58,7 @@ async function setupTVSelector(seasons) {
     const sSelect = document.getElementById('seasonNum');
     const eSelect = document.getElementById('episodeNum');
 
+    sSelect.innerHTML = ''; 
     for (let i = 1; i <= seasons; i++) {
         let opt = document.createElement('option');
         opt.value = i;
@@ -66,7 +84,14 @@ async function setupTVSelector(seasons) {
     await updateEpisodes();
 
     document.getElementById('updatePlayer').onclick = () => {
-        document.getElementById('videoIframe').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
+        const videoContainer = document.getElementById('videoContainer');
+        const placeholder = document.getElementById('playerPlaceholder');
+        const iframe = document.getElementById('videoIframe');
+
+        iframe.src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
+        placeholder.style.display = 'none';
+        videoContainer.style.display = 'block';
+        window.scrollTo({ top: 300, behavior: 'smooth' });
     };
 }
 
@@ -79,7 +104,7 @@ async function fetchRelated() {
         div.classList.add('movie-card');
         div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${type}`;
         div.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
+            <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" onerror="this.src='https://via.placeholder.com/500x750?text=No+Image'">
             <div class="card-info">
                 <h3>${item.title || item.name}</h3>
                 <p>⭐ ${item.vote_average.toFixed(1)}</p>
