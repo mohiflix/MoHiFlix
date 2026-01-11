@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoHiFlix - Watch All Moves & More</title>
+    <title>MoHiFlix - Premium Streaming</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.reload()">MoHiFlix</div>
+        <div class="logo" onclick="window.location.href='index.html'">MoHiFlix</div>
         
-        <select id="genreSelect">
-            <option value="">All Genres</option>
-            <option value="28">Action</option>
-            <option value="35">Comedy</option>
-            <option value="27">Horror</option>
-            <option value="10749">Romance</option>
-            <option value="878">Sci-Fi</option>
-        </select>
+        <div class="nav-controls">
+            <select id="genreSelect">
+                <option value="">All Genres</option>
+                <option value="28">Action</option>
+                <option value="35">Comedy</option>
+                <option value="27">Horror</option>
+                <option value="10749">Romance</option>
+                <option value="878">Sci-Fi</option>
+            </select>
 
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Search Hindi Dubbed...">
-            <button id="searchBtn">Search</button>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search ...">
+                <button id="searchBtn">Search</button>
+            </div>
         </div>
     </header>
 
@@ -31,10 +33,10 @@
     </div>
 
     <div class="container">
-        <h2 class="section-title">Latest Hindi Dubbed Hollywood</h2>
+        <h2 class="section-title" id="hindiTitle">Latest Hindi Dubbed Hollywood</h2>
         <div id="hindiDubbed" class="movie-row"></div>
 
-        <h2 class="section-title">All Content</h2>
+        <h2 class="section-title" id="mainTitle">All Content</h2>
         <main id="movies"></main>
     </div>
 
@@ -43,11 +45,9 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 MoHiFlix. All Rights Reserved. Developed by <strong>MoHi</strong></p>
-        <p style="font-size: 12px; color: #666;">Streaming Hindi Dubbed Hollywood & Indian Content via Vidsrc.</p>
+        <p>&copy; 2026 MoHiFlix | Stream All Movies</p>
     </footer>
 
     <script src="script.js"></script>
 </body>
 </html>
-
