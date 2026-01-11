@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoHiFlix - Watch Full Movies & TV Shows Online</title>
+    <title>MoHiFlix - Watch Online</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+        <div class="logo-container" onclick="location.href='index.html'">
             <img src="logo.png" alt="MoHiFlix" id="siteLogo">
         </div>
         
-        <select id="genreSelect">
-            <option value="">All Genres</option>
-            <option value="28">Action</option>
-            <option value="35">Comedy</option>
-            <option value="27">Horror</option>
-            <option value="10749">Romance</option>
-            <option value="878">Sci-Fi</option>
-        </select>
+        <div class="nav-elements">
+            <select id="genreSelect">
+                <option value="">All Genres</option>
+                <option value="28">Action</option>
+                <option value="35">Comedy</option>
+                <option value="27">Horror</option>
+                <option value="10749">Romance</option>
+                <option value="878">Sci-Fi</option>
+            </select>
 
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Search...">
-            <button id="searchBtn">Search</button>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search movies...">
+                <button id="searchBtn">Search</button>
+            </div>
         </div>
     </header>
 
@@ -37,10 +39,6 @@
     <div class="pagination">
         <button id="loadMore">Show More Content</button>
     </div>
-
-    <footer>
-        <p>&copy; 2026 MoHiFlix - All Rights Reserved.</p>
-    </footer>
 
     <script src="script.js"></script>
     <script src="https://demolitionculpritrape.com/78/cb/fd/78cbfd51dea8ffc25011b49782b04528.js"></script>
