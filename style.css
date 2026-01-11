@@ -1,18 +1,23 @@
 /* =========================================
-   MoHiFlix Premium & Final Style Sheet
+   MoHiFlix - Ultimate Premium Style Sheet
    ========================================= */
 
-/* General Reset */
+/* 1. General Reset & Base Styles */
+* {
+    box-sizing: border-box;
+}
+
 body { 
     background: #080808; 
     color: white; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
     margin: 0; 
     padding: 0; 
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
-/* Header Section */
+/* 2. Header & Navigation */
 header { 
     background: #000; 
     padding: 15px 5%; 
@@ -23,7 +28,7 @@ header {
     top: 0; 
     z-index: 1000; 
     border-bottom: 1px solid #222; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
 }
 
 .logo { 
@@ -32,18 +37,45 @@ header {
     font-weight: bold; 
     cursor: pointer; 
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    transition: 0.3s;
 }
 
-/* Search & Genre */
+.logo:hover {
+    text-shadow: 0 0 10px #e50914;
+}
+
+/* 3. Search & Filters */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 #genreSelect, .search-box input { 
-    background: #1a1a1a; 
+    background: #141414; 
     color: white; 
     border: 1px solid #333; 
     padding: 10px 15px; 
     border-radius: 5px; 
     outline: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
 }
+
+#genreSelect:focus, .search-box input:focus {
+    border-color: #e50914;
+}
+
+.search-box { 
+    display: flex; 
+}
+
+.search-box input {
+    border-radius: 5px 0 0 5px;
+    width: 200px;
+}
+
 #searchBtn { 
     padding: 10px 20px; 
     background: #e50914; 
@@ -52,107 +84,301 @@ header {
     border-radius: 0 5px 5px 0; 
     cursor: pointer; 
     font-weight: bold;
+    transition: 0.3s;
 }
 
-/* Filter Bar */
+#searchBtn:hover { 
+    background: #b20710; 
+}
+
+/* 4. Filter Buttons (Movie/TV) */
 .filter-bar { 
     display: flex; 
     justify-content: center; 
     gap: 15px; 
-    padding: 25px 0; 
+    padding: 30px 0 10px; 
 }
+
 .filter-bar button { 
     background: transparent; 
-    border: 2px solid #e50914; 
+    border: 2px solid #333; 
     color: white; 
-    padding: 10px 30px; 
+    padding: 10px 35px; 
     cursor: pointer; 
     border-radius: 30px; 
     font-weight: bold; 
+    transition: 0.3s ease; 
 }
-.filter-bar button.active { background: #e50914; }
 
-/* Special Hindi Dubbed Horizontal Row */
+.filter-bar button.active { 
+    background: #e50914; 
+    border-color: #e50914;
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+}
+
+/* 5. Section Titles */
+.section-title { 
+    padding: 0 5%; 
+    color: #fff; 
+    font-size: 1.6rem; 
+    margin: 40px 0 15px;
+    border-left: 5px solid #e50914;
+    margin-left: 5%;
+}
+
+/* 6. Special Horizontal Scroll Row (Hindi Dubbed) */
 .movie-row {
-    display: flex;
-    overflow-x: auto;
-    gap: 20px;
+    display: flex; 
+    overflow-x: auto; 
+    gap: 20px; 
     padding: 20px 5%;
-    scrollbar-width: thin;
-    scrollbar-color: #e50914 #000;
+    scroll-behavior: smooth;
 }
-.movie-row::-webkit-scrollbar { height: 6px; }
-.movie-row::-webkit-scrollbar-thumb { background: #e50914; border-radius: 10px; }
 
-/* Movie Grid Layout */
-#movies { 
+.movie-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.movie-row::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+}
+
+.movie-row::-webkit-scrollbar-thumb:hover {
+    background: #e50914;
+}
+
+/* 7. Main Grid Layout */
+#movies, #relatedMovies { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
     gap: 25px; 
-    padding: 20px 5% 40px; 
+    padding: 20px 5% 50px; 
 }
 
-/* Movie Card Design */
+/* 8. Movie Card Design */
 .movie-card { 
     background: #111; 
     border-radius: 12px; 
     overflow: hidden; 
-    transition: 0.3s ease; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
     border: 1px solid #222; 
     cursor: pointer; 
     text-align: center;
     position: relative;
-    min-width: 180px; /* Horizontal row er jonno */
+    min-width: 180px; /* Essential for horizontal row */
 }
-.movie-card:hover { 
-    transform: translateY(-10px); 
-    border-color: #e50914; 
-}
-.movie-card img { width: 100%; height: 270px; object-fit: cover; }
 
-/* Badges */
+.movie-card:hover { 
+    transform: translateY(-10px) scale(1.03); 
+    border-color: #e50914; 
+    box-shadow: 0 10px 25px rgba(229, 9, 20, 0.5);
+    z-index: 5;
+}
+
+.movie-card img { 
+    width: 100%; 
+    height: 270px; 
+    object-fit: cover; 
+    transition: 0.3s;
+}
+
+/* Badges Design */
 .hindi-badge {
     position: absolute;
     top: 10px;
     left: 10px;
     background: #f1c40f;
     color: black;
-    padding: 3px 8px;
+    padding: 4px 10px;
     font-size: 11px;
-    font-weight: bold;
+    font-weight: 900;
     border-radius: 4px;
     z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
+
 .type-badge {
     position: absolute;
     top: 10px;
     right: 10px;
     background: rgba(229, 9, 20, 0.9);
     color: white;
-    padding: 3px 8px;
+    padding: 4px 10px;
     font-size: 10px;
+    font-weight: bold;
     border-radius: 4px;
+    z-index: 10;
 }
 
-/* Section Title */
-.section-title { 
-    padding: 0 5%; 
-    color: #e50914; 
-    font-size: 1.6rem; 
-    margin: 30px 0 10px;
-    border-left: 5px solid #e50914;
-    margin-left: 5%;
+.movie-card h3 { 
+    font-size: 0.95rem; 
+    padding: 15px 10px 5px; 
+    margin: 0; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    color: #eee;
 }
 
-/* Pagination & Footer */
-.pagination { text-align: center; padding: 40px 0; }
-#loadMore { padding: 14px 40px; background: #e50914; color: white; border: none; border-radius: 8px; cursor: pointer; }
-footer { background: #000; padding: 40px 5%; text-align: center; border-top: 1px solid #222; }
+.movie-card p { 
+    color: #f1c40f; 
+    font-weight: bold; 
+    margin: 0; 
+    padding-bottom: 15px;
+    font-size: 0.9rem;
+}
 
-/* Responsive */
+/* 9. Details Page Styles */
+.details-container { 
+    display: flex; 
+    flex-wrap: wrap; 
+    padding: 50px 5%; 
+    gap: 40px; 
+    justify-content: center; 
+    background: linear-gradient(to bottom, #111, #080808);
+}
+
+.details-container img { 
+    width: 320px; 
+    border-radius: 15px; 
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 1); 
+    border: 1px solid #333;
+}
+
+.info { 
+    flex: 1; 
+    min-width: 300px; 
+    max-width: 800px; 
+}
+
+.info h1 { 
+    font-size: 2.8rem; 
+    color: #fff; 
+    margin-top: 0; 
+    margin-bottom: 10px;
+}
+
+.player-wrapper {
+    margin-top: 30px;
+    border: 2px solid #222;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* 10. Episode Selector Styling */
+.episode-box {
+    background: #111;
+    padding: 30px;
+    margin: 20px 5%;
+    border-radius: 15px;
+    border: 1px solid #222;
+    text-align: center;
+}
+
+.selector-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.selector-controls select {
+    background: #1a1a1a;
+    color: white;
+    padding: 12px 20px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    min-width: 200px;
+    outline: none;
+    cursor: pointer;
+}
+
+#updatePlayer {
+    background: #e50914;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#updatePlayer:hover { 
+    background: #b20710; 
+    transform: scale(1.05); 
+}
+
+/* 11. Pagination & Footer */
+.pagination { 
+    text-align: center; 
+    padding: 50px 0; 
+}
+
+#loadMore { 
+    padding: 15px 50px; 
+    background: transparent; 
+    color: white; 
+    border: 2px solid #e50914; 
+    cursor: pointer; 
+    font-weight: bold; 
+    border-radius: 30px; 
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+#loadMore:hover { 
+    background: #e50914; 
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+}
+
+footer {
+    background: #000;
+    padding: 60px 5% 30px;
+    text-align: center;
+    border-top: 1px solid #222;
+}
+
+footer p { 
+    margin: 5px 0; 
+    color: #888; 
+}
+
+/* 12. Responsive Design */
+@media (max-width: 992px) {
+    .info h1 { font-size: 2.2rem; }
+}
+
 @media (max-width: 768px) {
-    #movies { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    header { flex-direction: column; gap: 15px; }
-    .movie-card { min-width: 150px; }
-    .movie-card img { height: 220px; }
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+    }
+    
+    .search-box input { width: 150px; }
+    
+    #movies { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 15px; 
+    }
+    
+    .details-container {
+        padding: 30px 5%;
+        text-align: center;
+    }
+    
+    .details-container img {
+        width: 250px;
+        margin: 0 auto;
+    }
+    
+    .info h1 { font-size: 1.8rem; }
+    
+    .movie-card { min-width: 140px; }
+    .movie-card img { height: 210px; }
 }
