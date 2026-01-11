@@ -25,25 +25,28 @@ async function getMovieDetails() {
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
 
-                <div style="margin-top: 30px; background: #000; padding: 25px; border: 2px solid #e50914; border-radius: 12px; text-align: center;">
-                    <h2 style="color: #e50914; font-size: 22px; margin-bottom: 15px;">📥 DOWNLOAD SERVER</h2>
-                    <p style="color: #bbb; font-size: 14px; margin-bottom: 20px;">
-                        Direct download link is not possible. Click the button below, then choose <b>"SERVER 1"</b> to download the file.
-                    </p>
+                <div style="margin-top: 30px; background: #111; padding: 25px; border: 2px solid #e50914; border-radius: 12px; text-align: center;">
+                    <h3 style="color: #fff; margin-bottom: 15px;">📥 DOWNLOAD LINKS</h3>
                     
-                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4); transition: 0.3s;">
-                        GENERATE DOWNLOAD LINK
-                    </button>
-                    
-                    <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 15px;">
-                        <p style="color: #fff; font-size: 13px;"><b>Alternative Way:</b></p>
-                        <p style="color: #888; font-size: 12px;">If you use IDM (Internet Download Manager) or ADM on Mobile, it will automatically catch the download link from the player above.</p>
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button id="directDL" style="background: #e50914; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                            Server 1: High Speed
+                        </button>
+                        <button id="mirrorDL" style="background: #333; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                            Server 2: HD Mirror
+                        </button>
                     </div>
+                    
+                    <p style="color: #888; font-size: 12px; margin-top: 20px;">
+                        <b>Tip:</b> If it plays instead of downloading, long press (mobile) or right-click the button and select <b>"Save link as..."</b>.
+                    </p>
                 </div>
+
+                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
             </div>
         `;
 
-        setupDownloadBtn();
+        setupDownloadSystem();
 
         if (type === 'tv') {
             setupTVSelector(movie.number_of_seasons);
@@ -53,23 +56,26 @@ async function getMovieDetails() {
     }
 }
 
-function setupDownloadBtn() {
-    const downloadBtn = document.getElementById('downloadBtn');
-    downloadBtn.addEventListener('click', () => {
-        let dlUrl = "";
-        if (type === 'movie') {
-            // vidsrc.pm provides a page with multiple download servers
-            dlUrl = `https://vidsrc.pm/video/movie/${movieId}`;
-        } else {
-            const sNum = document.getElementById('seasonNum').value || 1;
-            const eNum = document.getElementById('episodeNum').value || 1;
-            dlUrl = `https://vidsrc.pm/video/tv/${movieId}/${sNum}/${eNum}`;
-        }
-        window.open(dlUrl, '_blank');
-    });
+function setupDownloadSystem() {
+    const btn1 = document.getElementById('directDL');
+    const btn2 = document.getElementById('mirrorDL');
+
+    btn1.onclick = () => {
+        let url = (type === 'movie') 
+            ? `https://vidsrc.icu/embed/movie/${movieId}` 
+            : `https://vidsrc.icu/embed/tv/${movieId}/${document.getElementById('seasonNum').value || 1}/${document.getElementById('episodeNum').value || 1}`;
+        window.open(url, '_blank');
+    };
+
+    btn2.onclick = () => {
+        let url = (type === 'movie') 
+            ? `https://vidsrc.pm/video/movie/${movieId}` 
+            : `https://vidsrc.pm/video/tv/${movieId}/${document.getElementById('seasonNum').value || 1}/${document.getElementById('episodeNum').value || 1}`;
+        window.open(url, '_blank');
+    };
 }
 
-// Baki TV Selector and Related functions (unchanged)
+// Baki code (TV Selector & Related) same thakbe
 async function setupTVSelector(seasons) {
     epSelector.style.display = 'block';
     const sSelect = document.getElementById('seasonNum');
