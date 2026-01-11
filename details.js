@@ -18,10 +18,19 @@ async function getMovieDetails() {
                 <h1>${movie.title || movie.name}</h1>
                 <p>⭐ ${movie.vote_average.toFixed(1)} | ${movie.original_language.toUpperCase()}</p>
                 <p>${movie.overview}</p>
+                
                 <div class="player-wrapper">
-                    <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
+                    <iframe id="mainPlayer" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">💡 Tip: Player-er 'Gear' icon theke Audio (Hindi/English) change korun jodi thake.</p>
+
+                <div class="server-options" style="margin-top:15px; display:flex; gap:10px;">
+                    <button onclick="changeServer('vidsrc')" class="download-btn" style="background:#e50914">Server 1 (Multi)</button>
+                    <button onclick="changeServer('vidsrc.to')" class="download-btn" style="background:#2980b9">Server 2 (Hindi Prefer)</button>
+                </div>
+
+                <p style="color:#f1c40f; font-size:13px; margin-top:10px;">
+                    💡 **Tip:** Player-er settings (Gear icon) theke Audio (Hindi/English) change kora jete pare.
+                </p>
             </div>
         `;
 
@@ -33,12 +42,22 @@ async function getMovieDetails() {
     } catch (e) { console.error(e); }
 }
 
+// Function to Change Player Server
+window.changeServer = (server) => {
+    const player = document.getElementById('mainPlayer');
+    if (server === 'vidsrc') {
+        player.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}`;
+    } else {
+        // vidsrc.to er structure ektu alada hoy
+        player.src = `https://vidsrc.to/embed/${type}/${movieId}`;
+    }
+};
+
 async function setupTVSelectors(seasons) {
     const sSelect = document.getElementById('seasonNum');
     const eSelect = document.getElementById('episodeNum');
     
     sSelect.innerHTML = '';
-    // Special/Season 0 bad diye baki shob season add kora
     seasons.filter(s => s.season_number > 0).forEach(s => {
         let opt = document.createElement('option');
         opt.value = s.season_number;
@@ -61,10 +80,13 @@ async function setupTVSelectors(seasons) {
     };
 
     sSelect.onchange = updateEpisodes;
-    await updateEpisodes(); // Initial load
+    await updateEpisodes();
 
     document.getElementById('updatePlayer').onclick = () => {
-        document.getElementById('videoIframe').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
+        const s = sSelect.value;
+        const e = eSelect.value;
+        // TV episode-er khetreo server 1 e thaka better
+        document.getElementById('mainPlayer').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${s}&episode=${e}`;
     };
 }
 
@@ -80,4 +102,5 @@ async function fetchRelated() {
         relatedContainer.appendChild(div);
     });
 }
+
 getMovieDetails();
