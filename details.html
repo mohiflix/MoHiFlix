@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details - MoHiFlix</title>
+    <title>Movie Details - MoHiFlix</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,12 +10,20 @@
         <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">MoHiFlix</div>
     </header>
 
-    <div id="movieDetails" class="details-container">
+    <div id="movieDetails" class="details-container"></div>
+
+    <div id="episodeSelector" class="episode-box" style="display:none;">
+        <h3>Select Season & Episode</h3>
+        <div class="selector-controls">
+            <select id="seasonNum"></select>
+            <select id="episodeNum"></select>
+            <button id="updatePlayer">Play Episode</button>
         </div>
+    </div>
 
     <div class="related-section">
         <h2 class="section-title">You May Also Like</h2>
-        <div id="relatedMovies" class="movie-grid"></div>
+        <div id="relatedMovies"></div>
     </div>
 
     <script src="details.js"></script>
