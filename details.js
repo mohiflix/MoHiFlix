@@ -34,15 +34,8 @@ async function getMovieDetails() {
             </div>
         `;
 
-        // ওয়াচ বাটন ক্লিক করলে ভিডিও লোড হবে
         document.getElementById('watchBtn').onclick = function() {
-            const videoContainer = document.getElementById('videoContainer');
-            const placeholder = document.getElementById('playerPlaceholder');
-            const iframe = document.getElementById('videoIframe');
-
-            iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movie.id}`;
-            placeholder.style.display = 'none';
-            videoContainer.style.display = 'block';
+            loadPlayer(movie.id);
         };
 
         if (type === 'tv') {
@@ -51,6 +44,21 @@ async function getMovieDetails() {
     } catch (error) {
         console.error('Error fetching details:', error);
     }
+}
+
+function loadPlayer(id, season = null, episode = null) {
+    const videoContainer = document.getElementById('videoContainer');
+    const placeholder = document.getElementById('playerPlaceholder');
+    const iframe = document.getElementById('videoIframe');
+
+    let src = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
+    if (season && episode) {
+        src = `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}`;
+    }
+
+    iframe.src = src;
+    placeholder.style.display = 'none';
+    videoContainer.style.display = 'block';
 }
 
 async function setupTVSelector(seasons) {
@@ -84,13 +92,7 @@ async function setupTVSelector(seasons) {
     await updateEpisodes();
 
     document.getElementById('updatePlayer').onclick = () => {
-        const videoContainer = document.getElementById('videoContainer');
-        const placeholder = document.getElementById('playerPlaceholder');
-        const iframe = document.getElementById('videoIframe');
-
-        iframe.src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
-        placeholder.style.display = 'none';
-        videoContainer.style.display = 'block';
+        loadPlayer(movieId, sSelect.value, eSelect.value);
         window.scrollTo({ top: 300, behavior: 'smooth' });
     };
 }
