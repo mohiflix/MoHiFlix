@@ -23,6 +23,7 @@ async function getMovieDetails() {
                 <h3>Overview:</h3>
                 <p>${movie.overview}</p>
                 <div class="download-section">
+                    <p style="color:#e50914; font-size:14px;">If server 1 doesn't work, try server 2.</p>
                     <a href="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" target="_blank" class="download-btn">Watch Server 1</a>
                     <a href="https://vidsrc.to/embed/${type}/${movie.id}" target="_blank" class="download-btn" style="background:#2980b9">Watch Server 2</a>
                 </div>
