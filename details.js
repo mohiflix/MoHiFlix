@@ -12,7 +12,7 @@ async function getMovieDetails() {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}`);
         const movie = await res.json();
 
-        // SEO: Dynamic Title
+        // SEO: Dynamic Title update
         document.title = `Watch ${movie.title || movie.name} Online - MoHiFlix`;
 
         detailsContainer.innerHTML = `
@@ -25,13 +25,21 @@ async function getMovieDetails() {
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
                 
-                <div style="margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333;">
-                    <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #ccc;">Download Options:</h4>
-                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
-                        📥 Download Movie / Episode
-                    </button>
-                    <p style="color: #888; font-size: 11px; margin-top: 8px;">
-                        <b>Note:</b> After clicking, if the video starts playing, click the <b>"Three Dots"</b> (⋮) on the video player and select <b>Download</b>.
+                <div style="margin-top: 25px; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #333; text-align: center;">
+                    <h3 style="color: #fff; margin-bottom: 10px; font-size: 18px;">Fast Download Links</h3>
+                    <p style="color: #888; font-size: 12px; margin-bottom: 15px;">Choose a server below to download the file.</p>
+                    
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button id="downloadBtn1" style="background: #e50914; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                            📥 Server 1 (High Speed)
+                        </button>
+                        <button id="downloadBtn2" style="background: #333; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                            📥 Server 2 (Backup)
+                        </button>
+                    </div>
+                    
+                    <p style="color: #e50914; font-size: 11px; margin-top: 15px;">
+                        <b>Pro Tip:</b> If the video plays, click the <b>(⋮) three dots</b> in the bottom right corner of the video and select <b>"Download"</b>.
                     </p>
                 </div>
 
@@ -39,7 +47,7 @@ async function getMovieDetails() {
             </div>
         `;
 
-        setupDownloadBtn();
+        setupDownloadSystem();
 
         if (type === 'tv') {
             setupTVSelector(movie.number_of_seasons);
@@ -49,25 +57,31 @@ async function getMovieDetails() {
     }
 }
 
-function setupDownloadBtn() {
-    const downloadBtn = document.getElementById('downloadBtn');
-    
-    downloadBtn.addEventListener('click', () => {
-        let downloadLink = "";
-        
+function setupDownloadSystem() {
+    const btn1 = document.getElementById('downloadBtn1');
+    const btn2 = document.getElementById('downloadBtn2');
+
+    const handleDownload = (server) => {
+        let url = "";
         if (type === 'movie') {
-            // High-speed download mirror
-            downloadLink = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
+            url = server === 1 
+                ? `https://vidsrc.me/download/movie?tmdb=${movieId}` 
+                : `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
         } else {
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            downloadLink = `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
+            url = server === 1 
+                ? `https://vidsrc.me/download/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`
+                : `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
         }
-        
-        window.open(downloadLink, '_blank');
-    });
+        window.open(url, '_blank');
+    };
+
+    btn1.onclick = () => handleDownload(1);
+    btn2.onclick = () => handleDownload(2);
 }
 
+// ... Baki code (setupTVSelector ebong fetchRelated) thik ager motoi thakbe ...
 async function setupTVSelector(seasons) {
     epSelector.style.display = 'block';
     const sSelect = document.getElementById('seasonNum');
