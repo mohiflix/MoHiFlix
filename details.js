@@ -12,7 +12,7 @@ async function getMovieDetails() {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}`);
         const movie = await res.json();
 
-        // SEO: Dynamic Title update
+        // SEO: Dynamic Title
         document.title = `Watch ${movie.title || movie.name} Online - MoHiFlix`;
 
         detailsContainer.innerHTML = `
@@ -25,12 +25,13 @@ async function getMovieDetails() {
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
                 
-                <div style="margin-top: 20px;">
-                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 14px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(229, 9, 20, 0.4);">
-                        📥 Get Download Link
+                <div style="margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #ccc;">Download Options:</h4>
+                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                        📥 Download Movie / Episode
                     </button>
-                    <p style="color: #ccc; font-size: 12px; margin-top: 8px;">
-                        <b>How to Download:</b> After clicking, select a server and look for the 'Download' button.
+                    <p style="color: #888; font-size: 11px; margin-top: 8px;">
+                        <b>Note:</b> After clicking, if the video starts playing, click the <b>"Three Dots"</b> (⋮) on the video player and select <b>Download</b>.
                     </p>
                 </div>
 
@@ -55,13 +56,12 @@ function setupDownloadBtn() {
         let downloadLink = "";
         
         if (type === 'movie') {
-            // New PM Gateway for Movies
-            downloadLink = `https://vidsrc.pm/video/movie/${movieId}`;
+            // High-speed download mirror
+            downloadLink = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
         } else {
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            // New PM Gateway for TV
-            downloadLink = `https://vidsrc.pm/video/tv/${movieId}/${sNum}/${eNum}`;
+            downloadLink = `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
         }
         
         window.open(downloadLink, '_blank');
