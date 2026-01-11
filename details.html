@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Details - MoHiFlix</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .details-container { display: flex; padding: 50px; gap: 30px; }
+        .details-container img { width: 350px; border-radius: 15px; box-shadow: 0 0 20px rgba(229, 9, 20, 0.5); }
+        .info { max-width: 600px; }
+        .download-btn { 
+            display: inline-block; padding: 15px 30px; background: #27ae60; 
+            color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">MoHiFlix</div>
+    </header>
+
+    <div id="movieDetails" class="details-container">
+        </div>
+
+    <script src="details.js"></script>
+</body>
+</html>
