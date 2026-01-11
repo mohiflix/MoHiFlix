@@ -24,9 +24,19 @@ async function getMovieDetails() {
                 <div class="player-wrapper">
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
+                
+                <div style="margin-top: 20px;">
+                    <button id="downloadBtn" style="background: #1DB954; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                        📥 Download Now
+                    </button>
+                </div>
+
+                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page or check your internet.</p>
             </div>
         `;
+
+        // ডাউনলোড বাটনের কাজ সেট করা
+        setupDownloadLink();
 
         if (type === 'tv') {
             setupTVSelector(movie.number_of_seasons);
@@ -34,6 +44,22 @@ async function getMovieDetails() {
     } catch (error) {
         console.error('Error fetching details:', error);
     }
+}
+
+// ডাউনলোড লিঙ্ক জেনারেট করার ফাংশন
+function setupDownloadLink() {
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.onclick = () => {
+        let downloadUrl = "";
+        if (type === 'movie') {
+            downloadUrl = `https://vidsrc.me/download/movie?tmdb=${movieId}`;
+        } else {
+            const sNum = document.getElementById('seasonNum').value || 1;
+            const eNum = document.getElementById('episodeNum').value || 1;
+            downloadUrl = `https://vidsrc.me/download/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
+        }
+        window.open(downloadUrl, '_blank');
+    };
 }
 
 async function setupTVSelector(seasons) {
