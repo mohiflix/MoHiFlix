@@ -26,17 +26,18 @@ async function getMovieDetails() {
                 </div>
                 
                 <div style="margin-top: 20px;">
-                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px;">
-                        📥 Download Full HD
+                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 14px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(229, 9, 20, 0.4);">
+                        📥 Get Download Link
                     </button>
-                    <p style="color: #aaa; font-size: 11px; margin-top: 5px;">Tip: If it plays, click the three dots or 'Download' icon on the player.</p>
+                    <p style="color: #ccc; font-size: 12px; margin-top: 8px;">
+                        <b>How to Download:</b> After clicking, select a server and look for the 'Download' button.
+                    </p>
                 </div>
 
                 <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
             </div>
         `;
 
-        // ডাউনলোড বাটনটি সক্রিয় করা
         setupDownloadBtn();
 
         if (type === 'tv') {
@@ -47,7 +48,6 @@ async function getMovieDetails() {
     }
 }
 
-// ডাউনলোড ফাংশন (নতুন গেটওয়ে সহ)
 function setupDownloadBtn() {
     const downloadBtn = document.getElementById('downloadBtn');
     
@@ -55,16 +55,15 @@ function setupDownloadBtn() {
         let downloadLink = "";
         
         if (type === 'movie') {
-            // মুভির জন্য সরাসরি ডাউনলোড গেটওয়ে
-            downloadLink = `https://vidsrc.icu/embed/movie/${movieId}`;
+            // New PM Gateway for Movies
+            downloadLink = `https://vidsrc.pm/video/movie/${movieId}`;
         } else {
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            // টিভির জন্য সরাসরি ডাউনলোড গেটওয়ে
-            downloadLink = `https://vidsrc.icu/embed/tv/${movieId}/${sNum}/${eNum}`;
+            // New PM Gateway for TV
+            downloadLink = `https://vidsrc.pm/video/tv/${movieId}/${sNum}/${eNum}`;
         }
         
-        // এটি নতুন ট্যাবে ওপেন হবে যেখানে ডাউনলোড সার্ভার চুজ করা যায়
         window.open(downloadLink, '_blank');
     });
 }
