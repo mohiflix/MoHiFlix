@@ -2,73 +2,49 @@ const API_KEY = '42ba263cafdf8e88b49b1367b5a06ea7';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
-let currentPage = 1;
-let currentType = 'movie'; 
-let currentGenre = '';
-
 const movieContainer = document.getElementById('movies');
 const searchInput = document.getElementById('search');
-const genreSelect = document.getElementById('genreSelect');
-const loadMoreBtn = document.getElementById('loadMore');
+const searchBtn = document.getElementById('searchBtn');
 
-async function fetchContent(isNew = true) {
-    if (isNew) {
-        currentPage = 1;
-        movieContainer.innerHTML = '';
-    }
-
-    let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
-    
-    const query = searchInput.value.trim();
-    if (query) {
-        url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${query}&page=${currentPage}`;
-    }
-
+async function fetchMovies(url = `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`) {
     try {
         const res = await fetch(url);
         const data = await res.json();
-        renderContent(data.results);
+        renderMovies(data.results);
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching movies:', error);
     }
 }
 
-function renderContent(items) {
-    items.forEach(item => {
-        if (!item.poster_path) return;
-        const div = document.createElement('div');
-        div.classList.add('movie-card');
-        
-        // Movie ba TV type pathano details page-e
-        div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${currentType}`;
-        
-        div.innerHTML = `
-            <img src="${IMG_URL + item.poster_path}">
+function renderMovies(movies) {
+    movieContainer.innerHTML = '';
+    if (movies.length === 0) {
+        movieContainer.innerHTML = '<h2>No movies found</h2>';
+        return;
+    }
+    movies.forEach(movie => {
+        if (!movie.poster_path) return;
+        const movieDiv = document.createElement('div');
+        movieDiv.classList.add('movie-card');
+        movieDiv.onclick = () => window.location.href = `details.html?id=${movie.id}`;
+        movieDiv.innerHTML = `
+            <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
             <div class="card-info">
-                <h3>${item.title || item.name}</h3>
-                <p>⭐ ${item.vote_average.toFixed(1)}</p>
+                <h3>${movie.title}</h3>
+                <p>⭐ ${movie.vote_average.toFixed(1)}</p>
             </div>
         `;
-        movieContainer.appendChild(div);
+        movieContainer.appendChild(movieDiv);
     });
 }
 
-function changeType(type) {
-    currentType = type;
-    document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
-    document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
-    fetchContent();
+function performSearch() {
+    const query = searchInput.value.trim();
+    if (query) fetchMovies(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`);
+    else fetchMovies();
 }
 
-loadMoreBtn.onclick = () => {
-    currentPage++;
-    fetchContent(false);
-};
+searchBtn.addEventListener('click', performSearch);
+searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
 
-genreSelect.onchange = (e) => {
-    currentGenre = e.target.value;
-    fetchContent();
-};
-
-document.getElementById('searchBtn').onclick = () => fetchContent();
-window.onload = () => fetchContent();
+window.onload = () => fetchMovies();
