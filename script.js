@@ -3,7 +3,7 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
 let currentPage = 1;
-let currentType = 'movie'; // movie or tv
+let currentType = 'movie'; 
 let currentGenre = '';
 
 const movieContainer = document.getElementById('movies');
@@ -19,7 +19,6 @@ async function fetchContent(isNew = true) {
 
     let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
     
-    // Search thakle search API use hobe
     const query = searchInput.value.trim();
     if (query) {
         url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${query}&page=${currentPage}`;
@@ -40,7 +39,7 @@ function renderContent(items) {
         const div = document.createElement('div');
         div.classList.add('movie-card');
         
-        // Movie hole id, TV series holeo id kintu link alada hote pare (amra ek e template use korchi)
+        // Movie ba TV type pathano details page-e
         div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${currentType}`;
         
         div.innerHTML = `
@@ -54,7 +53,6 @@ function renderContent(items) {
     });
 }
 
-// 1. Change Type (Movie/TV)
 function changeType(type) {
     currentType = type;
     document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
@@ -62,18 +60,15 @@ function changeType(type) {
     fetchContent();
 }
 
-// 2. Pagination (Load More)
 loadMoreBtn.onclick = () => {
     currentPage++;
     fetchContent(false);
 };
 
-// 3. Genre Filter
 genreSelect.onchange = (e) => {
     currentGenre = e.target.value;
     fetchContent();
 };
 
 document.getElementById('searchBtn').onclick = () => fetchContent();
-
 window.onload = () => fetchContent();
