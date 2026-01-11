@@ -26,17 +26,17 @@ async function getMovieDetails() {
                 </div>
                 
                 <div style="margin-top: 20px;">
-                    <button id="downloadBtn" style="background: #1DB954; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
-                        📥 Download Now
+                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        📥 Download Full HD
                     </button>
                 </div>
 
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page or check your internet.</p>
+                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
             </div>
         `;
 
-        // ডাউনলোড বাটনের কাজ সেট করা
-        setupDownloadLink();
+        // ডাউনলোড বাটনটি সক্রিয় করা
+        setupDownloadBtn();
 
         if (type === 'tv') {
             setupTVSelector(movie.number_of_seasons);
@@ -46,20 +46,26 @@ async function getMovieDetails() {
     }
 }
 
-// ডাউনলোড লিঙ্ক জেনারেট করার ফাংশন
-function setupDownloadLink() {
+// ডাউনলোড ফাংশন
+function setupDownloadBtn() {
     const downloadBtn = document.getElementById('downloadBtn');
-    downloadBtn.onclick = () => {
-        let downloadUrl = "";
+    
+    downloadBtn.addEventListener('click', () => {
+        let finalDownloadUrl = "";
+        
         if (type === 'movie') {
-            downloadUrl = `https://vidsrc.me/download/movie?tmdb=${movieId}`;
+            // মুভির জন্য ডাউনলোড গেটওয়ে
+            finalDownloadUrl = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
         } else {
+            // টিভির জন্য সিলেক্ট করা সিজন ও এপিসোড নেওয়া
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            downloadUrl = `https://vidsrc.me/download/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
+            finalDownloadUrl = `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
         }
-        window.open(downloadUrl, '_blank');
-    };
+        
+        // এখানে সরাসরি প্লেয়ার লিঙ্কে পাঠিয়ে দেওয়া হচ্ছে যেখানে 'Download' অপশন থাকে
+        window.open(finalDownloadUrl, '_blank');
+    });
 }
 
 async function setupTVSelector(seasons) {
