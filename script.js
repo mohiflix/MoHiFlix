@@ -12,7 +12,7 @@ const loadMoreBtn = document.getElementById('loadMore');
 let currentPage = 1;
 let currentType = 'movie';
 
-// 1. Latest Hindi Dubbed Row (Only for Home Screen)
+// 1. Home Page Latest Hindi Dubbed Row
 async function fetchHindiDubbed() {
     const url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_original_language=en&region=IN&sort_by=popularity.desc&page=1`;
     try {
@@ -38,7 +38,7 @@ function renderHindiRow(movies) {
     });
 }
 
-// 2. Optimized Search & Main Content Loader
+// 2. Fixed Search Logic
 async function fetchContent(isNew = true) {
     if (isNew) {
         currentPage = 1;
@@ -48,27 +48,34 @@ async function fetchContent(isNew = true) {
     const query = searchInput.value.trim();
     const genre = genreSelect.value;
     
-    // Search korle Hindi row hide korbo
+    // UI Updates for Search
     if (query) {
-        document.getElementById('hindiDubbed').style.display = 'none';
+        hindiDubbedContainer.style.display = 'none';
         document.getElementById('hindiTitle').style.display = 'none';
         document.getElementById('mainTitle').innerText = `Search Results for: ${query}`;
     } else {
-        document.getElementById('hindiDubbed').style.display = 'flex';
+        hindiDubbedContainer.style.display = 'flex';
         document.getElementById('hindiTitle').style.display = 'block';
         document.getElementById('mainTitle').innerText = `All Content`;
     }
 
+    // API URL Construction
+    // Jodi movie type hoy tobe search/movie use hobe, tv hole search/tv
     let url = query 
-        ? `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${query}&page=${currentPage}`
-        : `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&sort_by=popularity.desc`;
+        ? `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${currentPage}&include_adult=false`
+        : `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&sort_by=popularity.desc&region=IN`;
     
     if (!query && genre) url += `&with_genres=${genre}`;
 
     try {
         const res = await fetch(url);
         const data = await res.json();
-        renderMainContent(data.results);
+        
+        if (data.results.length === 0) {
+            movieContainer.innerHTML = `<p style="text-align:center; width:100%; color:#888;">No results found for "${query}"</p>`;
+        } else {
+            renderMainContent(data.results);
+        }
     } catch (e) { console.error(e); }
 }
 
@@ -89,7 +96,7 @@ function renderMainContent(items) {
     });
 }
 
-// 3. Event Listeners
+// Event Listeners
 searchBtn.onclick = () => fetchContent(true);
 searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchContent(true); });
 genreSelect.onchange = () => fetchContent(true);
@@ -99,6 +106,8 @@ window.changeType = (type) => {
     currentType = type;
     document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
     document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
+    // Clear search and show home screen when switching types
+    searchInput.value = '';
     fetchContent(true);
 };
 
