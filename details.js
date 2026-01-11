@@ -12,7 +12,6 @@ async function getMovieDetails() {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}`);
         const movie = await res.json();
 
-        // SEO Title
         document.title = `Watch ${movie.title || movie.name} - MoHiFlix`;
 
         detailsContainer.innerHTML = `
@@ -26,20 +25,20 @@ async function getMovieDetails() {
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
 
-                <div style="margin-top: 20px; background: #111; padding: 20px; border: 1px dashed #e50914; border-radius: 10px; text-align: center;">
-                    <h3 style="color: #e50914; margin-bottom: 10px;">📥 How to Download?</h3>
-                    <p style="font-size: 14px; color: #ccc; margin-bottom: 15px;">
-                        Direct downloading is restricted by servers. To download, click the button below and follow these steps:
+                <div style="margin-top: 30px; background: #000; padding: 25px; border: 2px solid #e50914; border-radius: 12px; text-align: center;">
+                    <h2 style="color: #e50914; font-size: 22px; margin-bottom: 15px;">📥 DOWNLOAD SERVER</h2>
+                    <p style="color: #bbb; font-size: 14px; margin-bottom: 20px;">
+                        Direct download link is not possible. Click the button below, then choose <b>"SERVER 1"</b> to download the file.
                     </p>
-                    <ul style="text-align: left; font-size: 13px; color: #aaa; display: inline-block; margin-bottom: 15px;">
-                        <li>1. Click the <b>Download Mirror</b> button.</li>
-                        <li>2. If the video starts playing, click the <b>Three Dots (⋮)</b> at the bottom right.</li>
-                        <li>3. Select <b>"Download"</b> from the menu.</li>
-                    </ul>
-                    <br>
-                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase;">
-                        Go to Download Mirror
+                    
+                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4); transition: 0.3s;">
+                        GENERATE DOWNLOAD LINK
                     </button>
+                    
+                    <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 15px;">
+                        <p style="color: #fff; font-size: 13px;"><b>Alternative Way:</b></p>
+                        <p style="color: #888; font-size: 12px;">If you use IDM (Internet Download Manager) or ADM on Mobile, it will automatically catch the download link from the player above.</p>
+                    </div>
                 </div>
             </div>
         `;
@@ -57,32 +56,29 @@ async function getMovieDetails() {
 function setupDownloadBtn() {
     const downloadBtn = document.getElementById('downloadBtn');
     downloadBtn.addEventListener('click', () => {
-        let downloadLink = "";
+        let dlUrl = "";
         if (type === 'movie') {
-            // vidsrc.xyz mirror supports the native browser download menu better
-            downloadLink = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
+            // vidsrc.pm provides a page with multiple download servers
+            dlUrl = `https://vidsrc.pm/video/movie/${movieId}`;
         } else {
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            downloadLink = `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
+            dlUrl = `https://vidsrc.pm/video/tv/${movieId}/${sNum}/${eNum}`;
         }
-        window.open(downloadLink, '_blank');
+        window.open(dlUrl, '_blank');
     });
 }
 
-// TV Selector logic remains same
+// Baki TV Selector and Related functions (unchanged)
 async function setupTVSelector(seasons) {
     epSelector.style.display = 'block';
     const sSelect = document.getElementById('seasonNum');
     const eSelect = document.getElementById('episodeNum');
-
     for (let i = 1; i <= seasons; i++) {
         let opt = document.createElement('option');
-        opt.value = i;
-        opt.text = `Season ${i}`;
+        opt.value = i; opt.text = `Season ${i}`;
         sSelect.add(opt);
     }
-
     const updateEpisodes = async () => {
         const sNum = sSelect.value;
         const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${sNum}?api_key=${API_KEY}`);
@@ -95,16 +91,13 @@ async function setupTVSelector(seasons) {
             eSelect.add(opt);
         });
     };
-
     sSelect.onchange = updateEpisodes;
     await updateEpisodes();
-
     document.getElementById('updatePlayer').onclick = () => {
         document.getElementById('videoIframe').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
     };
 }
 
-// Related content logic remains same
 async function fetchRelated() {
     const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}`);
     const data = await res.json();
