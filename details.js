@@ -16,20 +16,19 @@ async function getMovieDetails() {
             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
             <div class="info">
                 <h1>${movie.title || movie.name}</h1>
-                <p>⭐ ${movie.vote_average.toFixed(1)}</p>
+                <p>⭐ ${movie.vote_average.toFixed(1)} | ${movie.original_language.toUpperCase()}</p>
                 <p>${movie.overview}</p>
-                <div id="playerFrame" style="margin-top:20px;">
-                    <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
+                <div class="player-wrapper">
+                    <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
+                <p style="color:#e50914; font-size:12px; margin-top:10px;">💡 Tip: Use the 'Gear' icon in the player to change audio language (Hindi/English).</p>
             </div>
         `;
 
-        // Jodi TV series hoy, tobe Season selection logic
         if (type === 'tv') {
             epSelector.style.display = 'block';
             setupTVSelectors(movie.number_of_seasons);
         }
-
         fetchRelated();
     } catch (e) { console.error(e); }
 }
@@ -38,27 +37,31 @@ function setupTVSelectors(totalSeasons) {
     const sSelect = document.getElementById('seasonNum');
     const eSelect = document.getElementById('episodeNum');
     
+    sSelect.innerHTML = '';
     for (let i = 1; i <= totalSeasons; i++) {
         let opt = document.createElement('option');
         opt.value = i; opt.text = `Season ${i}`;
         sSelect.add(opt);
     }
 
-    // Default 20 episodes per season (TMDB API theke exact ana jay, ekhane simple rakha hoyeche)
-    for (let i = 1; i <= 24; i++) {
-        let opt = document.createElement('option');
-        opt.value = i; opt.text = `Episode ${i}`;
-        eSelect.add(opt);
-    }
+    // Season change hole episode dropdown update hobe
+    const updateEpisodes = () => {
+        eSelect.innerHTML = '';
+        for (let i = 1; i <= 30; i++) { // Default max 30 eps
+            let opt = document.createElement('option');
+            opt.value = i; opt.text = `Episode ${i}`;
+            eSelect.add(opt);
+        }
+    };
+
+    updateEpisodes();
+    sSelect.onchange = updateEpisodes;
 
     document.getElementById('updatePlayer').onclick = () => {
-        const s = sSelect.value;
-        const e = eSelect.value;
-        document.getElementById('videoIframe').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${s}&episode=${e}`;
+        document.getElementById('videoIframe').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
     };
 }
 
-// Baki Related section logic ager motoi
 async function fetchRelated() {
     const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}`);
     const data = await res.json();
@@ -71,5 +74,4 @@ async function fetchRelated() {
         relatedContainer.appendChild(div);
     });
 }
-
 getMovieDetails();
