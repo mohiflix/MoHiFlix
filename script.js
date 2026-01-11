@@ -17,14 +17,11 @@ async function fetchContent(isNew = true) {
         movieContainer.innerHTML = '';
     }
 
+    let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
+    
     const query = searchInput.value.trim();
-    let url;
-
     if (query) {
-        // Search korle 'multi' search use hobe jate Movie+TV duto-i ashe
-        url = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}&page=${currentPage}`;
-    } else {
-        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
+        url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${query}&page=${currentPage}`;
     }
 
     try {
@@ -42,17 +39,14 @@ function renderContent(items) {
         const div = document.createElement('div');
         div.classList.add('movie-card');
         
-        // Multi search a 'media_type' thake, seta use kora hoyeche
-        const type = item.media_type || currentType;
-        
-        div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${type}`;
+        // Movie ba TV type pathano details page-e
+        div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${currentType}`;
         
         div.innerHTML = `
             <img src="${IMG_URL + item.poster_path}">
             <div class="card-info">
                 <h3>${item.title || item.name}</h3>
-                <p>⭐ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</p>
-                <span class="type-badge">${type.toUpperCase()}</span>
+                <p>⭐ ${item.vote_average.toFixed(1)}</p>
             </div>
         `;
         movieContainer.appendChild(div);
@@ -61,7 +55,6 @@ function renderContent(items) {
 
 function changeType(type) {
     currentType = type;
-    searchInput.value = ''; // Type change korle search clear hobe
     document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
     document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
     fetchContent();
