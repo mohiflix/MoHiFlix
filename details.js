@@ -21,41 +21,47 @@ async function getMovieDetails() {
                 <div class="player-wrapper">
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">💡 Tip: Use the 'Gear' icon in the player to change audio language (Hindi/English).</p>
+                <p style="color:#e50914; font-size:12px; margin-top:10px;">💡 Tip: Player-er 'Gear' icon theke Audio (Hindi/English) change korun jodi thake.</p>
             </div>
         `;
 
         if (type === 'tv') {
             epSelector.style.display = 'block';
-            setupTVSelectors(movie.number_of_seasons);
+            setupTVSelectors(movie.seasons);
         }
         fetchRelated();
     } catch (e) { console.error(e); }
 }
 
-function setupTVSelectors(totalSeasons) {
+async function setupTVSelectors(seasons) {
     const sSelect = document.getElementById('seasonNum');
     const eSelect = document.getElementById('episodeNum');
     
     sSelect.innerHTML = '';
-    for (let i = 1; i <= totalSeasons; i++) {
+    // Special/Season 0 bad diye baki shob season add kora
+    seasons.filter(s => s.season_number > 0).forEach(s => {
         let opt = document.createElement('option');
-        opt.value = i; opt.text = `Season ${i}`;
+        opt.value = s.season_number;
+        opt.text = `Season ${s.season_number}`;
         sSelect.add(opt);
-    }
+    });
 
-    // Season change hole episode dropdown update hobe
-    const updateEpisodes = () => {
+    const updateEpisodes = async () => {
+        const sNum = sSelect.value;
+        const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${sNum}?api_key=${API_KEY}`);
+        const sData = await res.json();
+        
         eSelect.innerHTML = '';
-        for (let i = 1; i <= 30; i++) { // Default max 30 eps
+        sData.episodes.forEach(ep => {
             let opt = document.createElement('option');
-            opt.value = i; opt.text = `Episode ${i}`;
+            opt.value = ep.episode_number;
+            opt.text = `Episode ${ep.episode_number}: ${ep.name}`;
             eSelect.add(opt);
-        }
+        });
     };
 
-    updateEpisodes();
     sSelect.onchange = updateEpisodes;
+    await updateEpisodes(); // Initial load
 
     document.getElementById('updatePlayer').onclick = () => {
         document.getElementById('videoIframe').src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
