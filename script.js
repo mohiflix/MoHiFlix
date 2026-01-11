@@ -39,7 +39,7 @@ function renderContent(items) {
         const div = document.createElement('div');
         div.classList.add('movie-card');
         
-        // Movie ba TV type pathano details page-e
+        // Correct Type selection logic
         div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${currentType}`;
         
         div.innerHTML = `
