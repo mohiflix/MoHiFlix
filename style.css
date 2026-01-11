@@ -1,5 +1,5 @@
 /* =========================================
-   MoHiFlix Premium & Final Style Sheet
+   MoHiFlix Premium Style Sheet
    ========================================= */
 
 /* General Reset */
@@ -210,7 +210,7 @@ header {
     border: 1px solid #444;
     border-radius: 5px;
     margin: 8px;
-    width: 160px;
+    width: 200px; /* Episode namer jonno boro kora hoyeche */
     outline: none;
     cursor: pointer;
 }
@@ -226,16 +226,6 @@ header {
 }
 #updatePlayer:hover { background: #b20710; transform: scale(1.05); }
 
-/* Related Section Title */
-.section-title { 
-    padding: 0 5%; 
-    color: #e50914; 
-    font-size: 1.8rem; 
-    border-bottom: 2px solid #222; 
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-}
-
 /* Footer Section */
 footer {
     background: #000;
@@ -248,7 +238,6 @@ footer p { margin: 5px 0; color: #bbb; }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #000; }
 ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 10px; }
 
 /* Responsive Design */
@@ -258,4 +247,5 @@ footer p { margin: 5px 0; color: #bbb; }
     .search-box input { width: 160px; }
     .details-container img { width: 280px; margin: 0 auto; }
     .info h1 { font-size: 1.8rem; text-align: center; }
+    .selector-controls select { width: 90%; }
 }
