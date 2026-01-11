@@ -3,20 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoHiFlix - Watch Movies Online</title>
+    <title>MoHiFlix - Movies & TV Shows</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.reload()" style="cursor:pointer">MoHiFlix</div>
+        <div class="logo" onclick="location.reload()">MoHiFlix</div>
+        
+        <select id="genreSelect">
+            <option value="">All Genres</option>
+            <option value="28">Action</option>
+            <option value="35">Comedy</option>
+            <option value="27">Horror</option>
+            <option value="10749">Romance</option>
+            <option value="878">Sci-Fi</option>
+        </select>
+
         <div class="search-box">
-            <input type="text" id="search" placeholder="Search movies...">
+            <input type="text" id="search" placeholder="Search...">
             <button id="searchBtn">Search</button>
         </div>
     </header>
 
-    <main id="movies">
-        </main>
+    <div class="filter-bar">
+        <button onclick="changeType('movie')" id="movieBtn" class="active">Movies</button>
+        <button onclick="changeType('tv')" id="tvBtn">TV Series</button>
+    </div>
+
+    <main id="movies"></main>
+
+    <div class="pagination">
+        <button id="loadMore">Load More</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
