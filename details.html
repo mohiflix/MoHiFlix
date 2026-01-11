@@ -3,39 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Details - MoHiFlix</title>
+    <title>Details - MoHiFlix</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Details Page Section */
-        .details-container { display: flex; flex-wrap: wrap; padding: 50px 5%; gap: 40px; justify-content: center; }
-        .details-container img { width: 300px; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-        .info { max-width: 600px; flex: 1; min-width: 300px; }
-        .info h1 { font-size: 2.5rem; margin-top: 0; color: #e50914; }
-        .info p { line-height: 1.6; color: #ccc; }
-        .download-section { margin-top: 30px; }
-        .download-btn { 
-            display: inline-block; padding: 12px 25px; background: #27ae60; 
-            color: white; text-decoration: none; border-radius: 5px; font-weight: bold; 
-            margin-right: 10px; margin-bottom: 10px; transition: 0.3s;
-        }
-        .download-btn:hover { background: #219150; transform: scale(1.05); }
-
-        /* Related Movies Section Style */
-        .related-section { padding: 0 5%; margin-top: 50px; }
-        .related-title { color: #e50914; font-size: 1.8rem; border-bottom: 2px solid #222; padding-bottom: 10px; }
-        #relatedMovies { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding-top: 20px; margin-bottom: 50px; }
-    </style>
 </head>
 <body>
     <header>
         <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">MoHiFlix</div>
     </header>
 
-    <div id="movieDetails" class="details-container"></div>
+    <div id="movieDetails" class="details-container">
+        </div>
 
     <div class="related-section">
-        <h2 class="related-title">You May Also Like</h2>
-        <div id="relatedMovies"></div>
+        <h2 class="section-title">You May Also Like</h2>
+        <div id="relatedMovies" class="movie-grid"></div>
     </div>
 
     <script src="details.js"></script>
