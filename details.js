@@ -29,6 +29,7 @@ async function getMovieDetails() {
                     <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px;">
                         📥 Download Full HD
                     </button>
+                    <p style="color: #aaa; font-size: 11px; margin-top: 5px;">Tip: If it plays, click the three dots or 'Download' icon on the player.</p>
                 </div>
 
                 <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
@@ -46,25 +47,25 @@ async function getMovieDetails() {
     }
 }
 
-// ডাউনলোড ফাংশন
+// ডাউনলোড ফাংশন (নতুন গেটওয়ে সহ)
 function setupDownloadBtn() {
     const downloadBtn = document.getElementById('downloadBtn');
     
     downloadBtn.addEventListener('click', () => {
-        let finalDownloadUrl = "";
+        let downloadLink = "";
         
         if (type === 'movie') {
-            // মুভির জন্য ডাউনলোড গেটওয়ে
-            finalDownloadUrl = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
+            // মুভির জন্য সরাসরি ডাউনলোড গেটওয়ে
+            downloadLink = `https://vidsrc.icu/embed/movie/${movieId}`;
         } else {
-            // টিভির জন্য সিলেক্ট করা সিজন ও এপিসোড নেওয়া
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            finalDownloadUrl = `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
+            // টিভির জন্য সরাসরি ডাউনলোড গেটওয়ে
+            downloadLink = `https://vidsrc.icu/embed/tv/${movieId}/${sNum}/${eNum}`;
         }
         
-        // এখানে সরাসরি প্লেয়ার লিঙ্কে পাঠিয়ে দেওয়া হচ্ছে যেখানে 'Download' অপশন থাকে
-        window.open(finalDownloadUrl, '_blank');
+        // এটি নতুন ট্যাবে ওপেন হবে যেখানে ডাউনলোড সার্ভার চুজ করা যায়
+        window.open(downloadLink, '_blank');
     });
 }
 
