@@ -12,8 +12,8 @@ async function getMovieDetails() {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}`);
         const movie = await res.json();
 
-        // SEO: Dynamic Title update
-        document.title = `Watch ${movie.title || movie.name} Online - MoHiFlix`;
+        // SEO Title
+        document.title = `Watch ${movie.title || movie.name} - MoHiFlix`;
 
         detailsContainer.innerHTML = `
             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title || movie.name}">
@@ -21,33 +21,30 @@ async function getMovieDetails() {
                 <h1>${movie.title || movie.name}</h1>
                 <p>⭐ ${movie.vote_average.toFixed(1)} | ${movie.original_language.toUpperCase()}</p>
                 <p>${movie.overview}</p>
+                
                 <div class="player-wrapper">
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
-                
-                <div style="margin-top: 25px; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #333; text-align: center;">
-                    <h3 style="color: #fff; margin-bottom: 10px; font-size: 18px;">Fast Download Links</h3>
-                    <p style="color: #888; font-size: 12px; margin-bottom: 15px;">Choose a server below to download the file.</p>
-                    
-                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                        <button id="downloadBtn1" style="background: #e50914; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                            📥 Server 1 (High Speed)
-                        </button>
-                        <button id="downloadBtn2" style="background: #333; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                            📥 Server 2 (Backup)
-                        </button>
-                    </div>
-                    
-                    <p style="color: #e50914; font-size: 11px; margin-top: 15px;">
-                        <b>Pro Tip:</b> If the video plays, click the <b>(⋮) three dots</b> in the bottom right corner of the video and select <b>"Download"</b>.
-                    </p>
-                </div>
 
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
+                <div style="margin-top: 20px; background: #111; padding: 20px; border: 1px dashed #e50914; border-radius: 10px; text-align: center;">
+                    <h3 style="color: #e50914; margin-bottom: 10px;">📥 How to Download?</h3>
+                    <p style="font-size: 14px; color: #ccc; margin-bottom: 15px;">
+                        Direct downloading is restricted by servers. To download, click the button below and follow these steps:
+                    </p>
+                    <ul style="text-align: left; font-size: 13px; color: #aaa; display: inline-block; margin-bottom: 15px;">
+                        <li>1. Click the <b>Download Mirror</b> button.</li>
+                        <li>2. If the video starts playing, click the <b>Three Dots (⋮)</b> at the bottom right.</li>
+                        <li>3. Select <b>"Download"</b> from the menu.</li>
+                    </ul>
+                    <br>
+                    <button id="downloadBtn" style="background: #e50914; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase;">
+                        Go to Download Mirror
+                    </button>
+                </div>
             </div>
         `;
 
-        setupDownloadSystem();
+        setupDownloadBtn();
 
         if (type === 'tv') {
             setupTVSelector(movie.number_of_seasons);
@@ -57,31 +54,23 @@ async function getMovieDetails() {
     }
 }
 
-function setupDownloadSystem() {
-    const btn1 = document.getElementById('downloadBtn1');
-    const btn2 = document.getElementById('downloadBtn2');
-
-    const handleDownload = (server) => {
-        let url = "";
+function setupDownloadBtn() {
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.addEventListener('click', () => {
+        let downloadLink = "";
         if (type === 'movie') {
-            url = server === 1 
-                ? `https://vidsrc.me/download/movie?tmdb=${movieId}` 
-                : `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
+            // vidsrc.xyz mirror supports the native browser download menu better
+            downloadLink = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}`;
         } else {
             const sNum = document.getElementById('seasonNum').value || 1;
             const eNum = document.getElementById('episodeNum').value || 1;
-            url = server === 1 
-                ? `https://vidsrc.me/download/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`
-                : `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
+            downloadLink = `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${sNum}&episode=${eNum}`;
         }
-        window.open(url, '_blank');
-    };
-
-    btn1.onclick = () => handleDownload(1);
-    btn2.onclick = () => handleDownload(2);
+        window.open(downloadLink, '_blank');
+    });
 }
 
-// ... Baki code (setupTVSelector ebong fetchRelated) thik ager motoi thakbe ...
+// TV Selector logic remains same
 async function setupTVSelector(seasons) {
     epSelector.style.display = 'block';
     const sSelect = document.getElementById('seasonNum');
@@ -98,7 +87,6 @@ async function setupTVSelector(seasons) {
         const sNum = sSelect.value;
         const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${sNum}?api_key=${API_KEY}`);
         const sData = await res.json();
-        
         eSelect.innerHTML = '';
         sData.episodes.forEach(ep => {
             let opt = document.createElement('option');
@@ -116,6 +104,7 @@ async function setupTVSelector(seasons) {
     };
 }
 
+// Related content logic remains same
 async function fetchRelated() {
     const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}`);
     const data = await res.json();
