@@ -12,6 +12,7 @@ async function getMovieDetails() {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}`);
         const movie = await res.json();
 
+        // SEO Title
         document.title = `Watch ${movie.title || movie.name} - MoHiFlix`;
 
         detailsContainer.innerHTML = `
@@ -25,24 +26,22 @@ async function getMovieDetails() {
                     <iframe id="videoIframe" src="https://vidsrc.me/embed/${type}?tmdb=${movie.id}" width="100%" height="450px" frameborder="0" allowfullscreen></iframe>
                 </div>
 
-                <div style="margin-top: 30px; background: #111; padding: 25px; border: 2px solid #e50914; border-radius: 12px; text-align: center;">
-                    <h3 style="color: #fff; margin-bottom: 15px;">📥 DOWNLOAD LINKS</h3>
+                <div style="margin-top: 30px; background: #111; padding: 25px; border: 1px solid #e50914; border-radius: 12px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <h3 style="color: #fff; margin-bottom: 15px; font-size: 20px;">📥 Download Center</h3>
+                    <p style="color: #bbb; font-size: 13px; margin-bottom: 20px;">If one server doesn't work, please try another mirror link.</p>
                     
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <button id="directDL" style="background: #e50914; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
-                            Server 1: High Speed
-                        </button>
-                        <button id="mirrorDL" style="background: #333; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
-                            Server 2: HD Mirror
-                        </button>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button id="dlServer1" style="background: #e50914; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">🚀 Server 1 (HD)</button>
+                        <button id="dlServer2" style="background: #333; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">📡 Server 2 (Mirror)</button>
                     </div>
-                    
-                    <p style="color: #888; font-size: 12px; margin-top: 20px;">
-                        <b>Tip:</b> If it plays instead of downloading, long press (mobile) or right-click the button and select <b>"Save link as..."</b>.
-                    </p>
-                </div>
 
-                <p style="color:#e50914; font-size:12px; margin-top:10px;">Note: If player doesn't load, try refreshing the page.</p>
+                    <div style="margin-top: 20px; border-top: 1px solid #222; padding-top: 15px;">
+                        <p style="color: #888; font-size: 11px; line-height: 1.6;">
+                            <b>Android Users:</b> Use <b>ADM</b> or <b>1DM</b> Browser for 1-click download.<br>
+                            <b>PC Users:</b> Use <b>IDM</b> to capture video link automatically.
+                        </p>
+                    </div>
+                </div>
             </div>
         `;
 
@@ -57,25 +56,34 @@ async function getMovieDetails() {
 }
 
 function setupDownloadSystem() {
-    const btn1 = document.getElementById('directDL');
-    const btn2 = document.getElementById('mirrorDL');
+    const s1 = document.getElementById('dlServer1');
+    const s2 = document.getElementById('dlServer2');
 
-    btn1.onclick = () => {
-        let url = (type === 'movie') 
-            ? `https://vidsrc.icu/embed/movie/${movieId}` 
-            : `https://vidsrc.icu/embed/tv/${movieId}/${document.getElementById('seasonNum').value || 1}/${document.getElementById('episodeNum').value || 1}`;
-        window.open(url, '_blank');
+    const openLink = (baseUrl) => {
+        let finalUrl = "";
+        if (type === 'movie') {
+            finalUrl = `${baseUrl}/movie/${movieId}`;
+        } else {
+            const s = document.getElementById('seasonNum').value || 1;
+            const e = document.getElementById('episodeNum').value || 1;
+            finalUrl = `${baseUrl}/tv/${movieId}/${s}/${e}`;
+        }
+        window.open(finalUrl, '_blank');
     };
 
-    btn2.onclick = () => {
-        let url = (type === 'movie') 
-            ? `https://vidsrc.pm/video/movie/${movieId}` 
-            : `https://vidsrc.pm/video/tv/${movieId}/${document.getElementById('seasonNum').value || 1}/${document.getElementById('episodeNum').value || 1}`;
-        window.open(url, '_blank');
+    // Server 1 uses a modern gateway
+    s1.onclick = () => openLink('https://vidsrc.pm/video');
+    
+    // Server 2 uses a different stable gateway
+    s2.onclick = () => {
+        let altUrl = (type === 'movie') 
+            ? `https://vidsrc.xyz/embed/movie?tmdb=${movieId}` 
+            : `https://vidsrc.xyz/embed/tv?tmdb=${movieId}&season=${document.getElementById('seasonNum').value || 1}&episode=${document.getElementById('episodeNum').value || 1}`;
+        window.open(altUrl, '_blank');
     };
 }
 
-// Baki code (TV Selector & Related) same thakbe
+// TV Selector and Related Content (Unchanged)
 async function setupTVSelector(seasons) {
     epSelector.style.display = 'block';
     const sSelect = document.getElementById('seasonNum');
