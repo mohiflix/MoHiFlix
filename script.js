@@ -80,113 +80,65 @@ genreSelect.onchange = (e) => {
 document.getElementById('searchBtn').onclick = () => fetchContent();
 window.onload = () => fetchContent();
 
-// --- Additional Code for Indian and Bangladeshi Content Priority ---
+// --- Ekhane theke External Hindi Dubbed Logic add kora holo ---
 
-// Indian (IN) ebong Bangladeshi (BD) content priority dewar jonno fetch function ke modify kora holo
-async function fetchRegionalContent(isNew = true) {
+async function fetchMultiSourceContent(isNew = true) {
     if (isNew) {
         currentPage = 1;
         movieContainer.innerHTML = '';
     }
 
     const query = searchInput.value.trim();
-    
-    // Jodi search kora hoy, tobe ager logic e cholbe
     if (query) {
         fetchContent(isNew);
         return;
     }
 
-    // Indian ebong Bangladeshi content alada bhabe fetch korar jonno regions
-    const regions = ['IN', 'BD'];
-    
-    for (const region of regions) {
-        let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_origin_country=${region}&with_genres=${currentGenre}&sort_by=popularity.desc`;
+    // TMDB-r normal list-er sathe Hindi audio (dubbed) priority thaka movie gulo mix kora hobe
+    // Ete kore normal movie-o thakbe abar dubbed movie-o samne asbe
+    let dubbedUrl = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_spoken_languages=hi&sort_by=popularity.desc&with_genres=${currentGenre}`;
+
+    try {
+        const res = await fetch(dubbedUrl);
+        const data = await res.json();
         
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
-            if (data.results.length > 0) {
-                renderContent(data.results);
-            }
-        } catch (error) {
-            console.error(`Error fetching ${region} content:`, error);
+        if (data.results && data.results.length > 0) {
+            renderContent(data.results);
         }
+        
+        // Dubbed movie dekhano sesh hole normal movie-o niche add hobe (fetchContent call na kore logic deya holo)
+        let normalUrl = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
+        const resNormal = await fetch(normalUrl);
+        const dataNormal = await resNormal.json();
+        renderContent(dataNormal.results);
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        fetchContent(isNew);
     }
 }
 
-// Default load e regional content dekhate window.onload update kora holo
-window.onload = () => fetchRegionalContent();
+// Window load hole Mixed/Dubbed priority content dekhabe
+window.onload = () => fetchMultiSourceContent();
 
-// Load More button o regional content load korbe
+// Load More button update
 loadMoreBtn.onclick = () => {
     currentPage++;
-    fetchRegionalContent(false);
+    fetchMultiSourceContent(false);
 };
 
-// Genre change holeo regional focus thakbe
+// Genre change update
 genreSelect.onchange = (e) => {
     currentGenre = e.target.value;
-    fetchRegionalContent();
+    fetchMultiSourceContent();
 };
 
-// Type change (Movie/TV) holeo regional focus thakbe
-function changeTypeWithRegion(type) {
+// Movie/TV type change override
+const originalChangeType = changeType;
+window.changeType = (type) => {
     currentType = type;
     searchInput.value = '';
     document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
     document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
-    fetchRegionalContent();
-}
-
-// Ager function ke overwrite na kore global reference update
-window.changeType = changeTypeWithRegion;
-
-// --- Additional Code for Language and Dubbed Content ---
-
-// নির্দিষ্ট ভাষার কন্টেন্ট নিয়ে আসার জন্য ফাংশন (English, Tamil, etc.)
-async function fetchLanguageContent(languageCode, isNew = true) {
-    if (isNew) {
-        currentPage = 1;
-        movieContainer.innerHTML = '';
-    }
-
-    // with_original_language প্যারামিটার ব্যবহার করে নির্দিষ্ট ভাষার মুভি খোঁজা হয়
-    // English: 'en', Tamil: 'ta'
-    let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_original_language=${languageCode}&sort_by=popularity.desc`;
-
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.results.length > 0) {
-            renderContent(data.results);
-        }
-    } catch (error) {
-        console.error(`Error fetching ${languageCode} content:`, error);
-    }
-}
-
-// Dubbed মুভি দেখানোর জন্য লজিক 
-// সাধারণত TMDB তে 'Dubbed' এর সরাসরি ফিল্টার নেই, তবে নির্দিষ্ট রিজিয়নে অন্য ভাষার মুভিগুলোই ডাবড হিসেবে গণ্য হয়
-async function fetchDubbedContent(isNew = true) {
-    if (isNew) {
-        currentPage = 1;
-        movieContainer.innerHTML = '';
-    }
-
-    // উদাহরণস্বরূপ: ইন্ডিয়াতে রিলিজ হওয়া ইংলিশ মুভিগুলো সাধারণত ডাবড থাকে
-    let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_origin_country=IN&with_original_language=en&sort_by=popularity.desc`;
-
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        renderContent(data.results);
-    } catch (error) {
-        console.error('Error fetching dubbed content:', error);
-    }
-}
-
-// আপনি চাইলে আপনার HTML এ বাটন যোগ করে এই ফাংশনগুলো কল করতে পারেন:
-// English Movies: fetchLanguageContent('en')
-// Tamil Movies: fetchLanguageContent('ta')
-// Dubbed Movies: fetchDubbedContent()
+    fetchMultiSourceContent();
+};
