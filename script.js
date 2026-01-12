@@ -22,9 +22,9 @@ async function fetchContent(isNew = true) {
 
     if (query) {
         // Search korle 'multi' search use hobe jate Movie+TV duto-i ashe
-        url = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}&page=${currentPage}`;
+        url = ${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}&page=${currentPage};
     } else {
-        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
+        url = ${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre};
     }
 
     try {
@@ -43,15 +43,15 @@ function renderContent(items) {
         div.classList.add('movie-card');
         
         // Multi search a 'media_type' thake, seta use kora hoyeche
-        const type = item.media_type || currentType;
+        const type = item.media_type  currentType;
         
         div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${type}`;
         
         div.innerHTML = `
             <img src="${IMG_URL + item.poster_path}">
             <div class="card-info">
-                <h3>${item.title || item.name}</h3>
-                <p>⭐ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</p>
+                <h3>${item.title  item.name}</h3>
+                <p>⭐️ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</p>
                 <span class="type-badge">${type.toUpperCase()}</span>
             </div>
         `;
@@ -80,65 +80,113 @@ genreSelect.onchange = (e) => {
 document.getElementById('searchBtn').onclick = () => fetchContent();
 window.onload = () => fetchContent();
 
-// --- Ekhane theke External Hindi Dubbed Logic add kora holo ---
+// --- Additional Code for Indian and Bangladeshi Content Priority ---
 
-async function fetchMultiSourceContent(isNew = true) {
+// Indian (IN) ebong Bangladeshi (BD) content priority dewar jonno fetch function ke modify kora holo
+async function fetchRegionalContent(isNew = true) {
     if (isNew) {
         currentPage = 1;
         movieContainer.innerHTML = '';
     }
 
     const query = searchInput.value.trim();
+    
+    // Jodi search kora hoy, tobe ager logic e cholbe
     if (query) {
         fetchContent(isNew);
         return;
     }
 
-    // TMDB-r normal list-er sathe Hindi audio (dubbed) priority thaka movie gulo mix kora hobe
-    // Ete kore normal movie-o thakbe abar dubbed movie-o samne asbe
-    let dubbedUrl = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_spoken_languages=hi&sort_by=popularity.desc&with_genres=${currentGenre}`;
-
-    try {
-        const res = await fetch(dubbedUrl);
-        const data = await res.json();
+    // Indian ebong Bangladeshi content alada bhabe fetch korar jonno regions
+    const regions = ['IN', 'BD'];
+    
+    for (const region of regions) {
+        let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_origin_country=${region}&with_genres=${currentGenre}&sort_by=popularity.desc`;
         
-        if (data.results && data.results.length > 0) {
-            renderContent(data.results);
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            if (data.results.length > 0) {
+                renderContent(data.results);
+            }
+        } catch (error) {
+            console.error(Error fetching ${region} content:, error);
         }
-        
-        // Dubbed movie dekhano sesh hole normal movie-o niche add hobe (fetchContent call na kore logic deya holo)
-        let normalUrl = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
-        const resNormal = await fetch(normalUrl);
-        const dataNormal = await resNormal.json();
-        renderContent(dataNormal.results);
-
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        fetchContent(isNew);
     }
 }
 
-// Window load hole Mixed/Dubbed priority content dekhabe
-window.onload = () => fetchMultiSourceContent();
+// Default load e regional content dekhate window.onload update kora holo
+window.onload = () => fetchRegionalContent();
 
-// Load More button update
+// Load More button o regional content load korbe
 loadMoreBtn.onclick = () => {
     currentPage++;
-    fetchMultiSourceContent(false);
+    fetchRegionalContent(false);
 };
 
-// Genre change update
+// Genre change holeo regional focus thakbe
 genreSelect.onchange = (e) => {
     currentGenre = e.target.value;
-    fetchMultiSourceContent();
+    fetchRegionalContent();
 };
 
-// Movie/TV type change override
-const originalChangeType = changeType;
-window.changeType = (type) => {
+// Type change (Movie/TV) holeo regional focus thakbe
+function changeTypeWithRegion(type) {
     currentType = type;
     searchInput.value = '';
     document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
     document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
-    fetchMultiSourceContent();
-};
+    fetchRegionalContent();
+}
+
+// Ager function ke overwrite na kore global reference update
+window.changeType = changeTypeWithRegion;
+
+// --- Additional Code for Language and Dubbed Content ---
+
+// নির্দিষ্ট ভাষার কন্টেন্ট নিয়ে আসার জন্য ফাংশন (English, Tamil, etc.)
+async function fetchLanguageContent(languageCode, isNew = true) {
+    if (isNew) {
+        currentPage = 1;
+        movieContainer.innerHTML = '';
+    }
+
+    // with_original_language প্যারামিটার ব্যবহার করে নির্দিষ্ট ভাষার মুভি খোঁজা হয়
+    // English: 'en', Tamil: 'ta'
+    let url = ${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_original_language=${languageCode}&sort_by=popularity.desc;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.results.length > 0) {
+            renderContent(data.results);
+        }
+    } catch (error) {
+        console.error(Error fetching ${languageCode} content:, error);
+    }
+}
+
+// Dubbed মুভি দেখানোর জন্য লজিক 
+// সাধারণত TMDB তে 'Dubbed' এর সরাসরি ফিল্টার নেই, তবে নির্দিষ্ট রিজিয়নে অন্য ভাষার মুভিগুলোই ডাবড হিসেবে গণ্য হয়
+async function fetchDubbedContent(isNew = true) {
+    if (isNew) {
+        currentPage = 1;
+        movieContainer.innerHTML = '';
+    }
+
+    // উদাহরণস্বরূপ: ইন্ডিয়াতে রিলিজ হওয়া ইংলিশ মুভিগুলো সাধারণত ডাবড থাকে
+    let url = ${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_origin_country=IN&with_original_language=en&sort_by=popularity.desc;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        renderContent(data.results);
+    } catch (error) {
+        console.error('Error fetching dubbed content:', error);
+    }
+}
+
+// আপনি চাইলে আপনার HTML এ বাটন যোগ করে এই ফাংশনগুলো কল করতে পারেন:
+// English Movies: fetchLanguageContent('en')
+// Tamil Movies: fetchLanguageContent('ta')
+// Dubbed Movies: fetchDubbedContent()
