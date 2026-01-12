@@ -45,6 +45,22 @@
             padding: 10px 20px;
             border-radius: 5px;
         }
+        /* Suggested movies er styling */
+        .related-section {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .related-section h2 {
+            border-left: 4px solid #e50914;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        #relatedMovies {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
         @media (max-width: 768px) {
             .details-container {
                 flex-direction: column;
@@ -65,10 +81,15 @@
 
     <main>
         <a href="index.html" class="back-btn">← Back to Home</a>
+        
         <div id="movieDetails" class="details-container">
             <p>Loading details...</p>
         </div>
-        <div id="playerContainer"></div>
+
+        <section class="related-section">
+            <h2>Recommended for You</h2>
+            <div id="relatedMovies"></div>
+        </section>
     </main>
 
     <script src="details.js"></script>
