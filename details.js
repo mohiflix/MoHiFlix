@@ -116,3 +116,44 @@ async function fetchRelated() {
 
 getMovieDetails();
 fetchRelated();
+
+// --- আগের কোনো কোড পরিবর্তন না করে নিচে এই মাল্টি-সার্ভার লজিকটি যোগ করুন ---
+
+// মুভি যদি প্লে না হয় তবে বিকল্প সার্ভার বা মেথড যোগ করার ফাংশন
+function addAlternativeServers(movieId, type) {
+    const infoDiv = document.querySelector('.info');
+    
+    // সার্ভার লিস্টের জন্য একটি নতুন সেকশন তৈরি
+    const serverDiv = document.createElement('div');
+    serverDiv.style.marginTop = "20px";
+    serverDiv.innerHTML = `
+        <h4 style="color: #e50914; margin-bottom: 10px;">If server 1 doesn't work, try Server 2:</h4>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 1 (Default)</button>
+            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 2 (Alternative)</button>
+        </div>
+    `;
+    infoDiv.appendChild(serverDiv);
+}
+
+// সার্ভার পরিবর্তন করার ফাংশন
+window.changeServer = function(serverType) {
+    const iframe = document.getElementById('videoIframe');
+    const placeholder = document.getElementById('playerPlaceholder');
+    const videoContainer = document.getElementById('videoContainer');
+    
+    placeholder.style.display = 'none';
+    videoContainer.style.display = 'block';
+
+    if (serverType === 'vidsrc') {
+        iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}`;
+    } else if (serverType === '2embed') {
+        // ২এম্বেড সার্ভার অনেক সময় ভিড-সোর্স এর চেয়ে দ্রুত নতুন মুভি আপডেট করে
+        iframe.src = `https://www.2embed.cc/embed/${movieId}`;
+    }
+};
+
+// getMovieDetails ফাংশনের শেষে এটি কল করার জন্য লজিক (অটোমেটিক রান হবে)
+setTimeout(() => {
+    addAlternativeServers(movieId, type);
+}, 2000);
