@@ -4,32 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Details - MoHiFlix</title>
+    <link rel="icon" type="image/png" href="Logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">MoHiFlix</div>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <img src="Logo.png" alt="MoHiFlix Logo" class="header-logo">
+        </div>
     </header>
 
     <div id="movieDetails" class="details-container"></div>
 
     <div id="episodeSelector" class="episode-box" style="display:none;">
-        <h3>Select Season & Episode</h3>
-        <div class="selector-controls">
-            <select id="seasonNum"></select>
-            <select id="episodeNum"></select>
-            <button id="updatePlayer">Play Episode</button>
+        <h3>Select Episode</h3>
+        <div class="selectors">
+            <select id="seasonSelect"></select>
+            <select id="episodeSelect"></select>
         </div>
     </div>
 
-    <div class="related-section">
-        <h2 class="section-title">You May Also Like</h2>
-        <div id="relatedMovies"></div>
-    </div>
+    <div id="playerContainer"></div>
+
+    <h2 style="padding: 40px 5% 0;">Recommended For You</h2>
+    <div id="relatedMovies"></div>
+
+    <footer>
+        <p>&copy; 2024 MoHiFlix. All rights reserved.</p>
+    </footer>
 
     <script src="details.js"></script>
-
-    <script src="https://demolitionculpritrape.com/78/cb/fd/78cbfd51dea8ffc25011b49782b04528.js"></script>
-
 </body>
 </html>
