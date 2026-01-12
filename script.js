@@ -1,83 +1,81 @@
-const API_KEY = '42ba24683526610738d2b904d9e79888';
+const API_KEY = '42ba263cafdf8e88b49b1367b5a06ea7';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
 let currentPage = 1;
-let currentType = 'movie';
+let currentType = 'movie'; 
 let currentGenre = '';
-let searchQuery = '';
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchMovies();
-});
+const movieContainer = document.getElementById('movies');
+const searchInput = document.getElementById('search');
+const genreSelect = document.getElementById('genreSelect');
+const loadMoreBtn = document.getElementById('loadMore');
 
-function setType(type) {
-    currentType = type;
-    currentPage = 1;
-    document.getElementById('movieFilter').classList.toggle('active', type === 'movie');
-    document.getElementById('tvFilter').classList.toggle('active', type === 'tv');
-    fetchMovies();
-}
+async function fetchContent(isNew = true) {
+    if (isNew) {
+        currentPage = 1;
+        movieContainer.innerHTML = '';
+    }
 
-document.getElementById('genreSelect').addEventListener('change', (e) => {
-    currentGenre = e.target.value;
-    currentPage = 1;
-    fetchMovies();
-});
+    const query = searchInput.value.trim();
+    let url;
 
-document.getElementById('searchBtn').addEventListener('click', () => {
-    searchQuery = document.getElementById('search').value;
-    currentPage = 1;
-    fetchMovies();
-});
-
-async function fetchMovies() {
-    let url = "";
-    
-    if (searchQuery) {
-        url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${encodeURIComponent(searchQuery)}&page=${currentPage}`;
+    if (query) {
+        // Search korle 'multi' search use hobe jate Movie+TV duto-i ashe
+        url = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}&page=${currentPage}`;
     } else {
-        // Correct language filter for Indian (Hindi, Tamil, Telugu) and Bengali content
-        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}&with_original_language=hi,bn,ta,te&sort_by=popularity.desc`;
+        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}`;
     }
 
     try {
         const res = await fetch(url);
         const data = await res.json();
-        displayMovies(data.results, currentPage === 1);
+        renderContent(data.results);
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error:', error);
     }
 }
 
-function displayMovies(movies, clear) {
-    const container = document.getElementById('movies');
-    if (clear) container.innerHTML = '';
-
-    if (!movies || movies.length === 0) {
-        container.innerHTML = '<p style="text-align:center; width:100%;">No content found.</p>';
-        return;
-    }
-
-    movies.forEach(movie => {
-        const movieCard = document.createElement('div');
-        movieCard.classList.add('movie-card');
-        movieCard.onclick = () => {
-            window.location.href = `details.html?id=${movie.id}&type=${currentType}`;
-        };
-
-        const title = movie.title || movie.name;
-        const poster = movie.poster_path ? IMG_URL + movie.poster_path : 'https://via.placeholder.com/180x270?text=No+Poster';
-
-        movieCard.innerHTML = `
-            <img src="${poster}" alt="${title}">
-            <h3>${title}</h3>
+function renderContent(items) {
+    items.forEach(item => {
+        if (!item.poster_path) return;
+        const div = document.createElement('div');
+        div.classList.add('movie-card');
+        
+        // Multi search a 'media_type' thake, seta use kora hoyeche
+        const type = item.media_type || currentType;
+        
+        div.onclick = () => window.location.href = `details.html?id=${item.id}&type=${type}`;
+        
+        div.innerHTML = `
+            <img src="${IMG_URL + item.poster_path}">
+            <div class="card-info">
+                <h3>${item.title || item.name}</h3>
+                <p>⭐ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</p>
+                <span class="type-badge">${type.toUpperCase()}</span>
+            </div>
         `;
-        container.appendChild(movieCard);
+        movieContainer.appendChild(div);
     });
 }
 
-document.getElementById('loadMore').addEventListener('click', () => {
+function changeType(type) {
+    currentType = type;
+    searchInput.value = ''; // Type change korle search clear hobe
+    document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
+    document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
+    fetchContent();
+}
+
+loadMoreBtn.onclick = () => {
     currentPage++;
-    fetchMovies();
-});
+    fetchContent(false);
+};
+
+genreSelect.onchange = (e) => {
+    currentGenre = e.target.value;
+    fetchContent();
+};
+
+document.getElementById('searchBtn').onclick = () => fetchContent();
+window.onload = () => fetchContent();
