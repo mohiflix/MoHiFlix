@@ -37,8 +37,8 @@ async function fetchMovies() {
     if (searchQuery) {
         url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${encodeURIComponent(searchQuery)}&page=${currentPage}`;
     } else {
-        // Correct way to fetch Indian (hi, ta, te) & Bengali (bn) content together
-        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}&with_original_language=hi|bn|ta|te&sort_by=popularity.desc&region=IN`;
+        // Bengali (bn) ebong Indian regional languages prioritize kora holo
+        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}&with_original_language=bn,hi,ta,te&sort_by=popularity.desc`;
     }
 
     try {
@@ -55,7 +55,7 @@ function displayMovies(movies, clear) {
     if (clear) container.innerHTML = '';
 
     if (!movies || movies.length === 0) {
-        container.innerHTML = '<p style="text-align:center; width:100%;">No content available at the moment.</p>';
+        container.innerHTML = '<p style="text-align:center; width:100%;">No content found.</p>';
         return;
     }
 
