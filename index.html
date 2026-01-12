@@ -4,24 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoHiFlix - Watch Full Movies & TV Shows Online</title>
-    <meta name="description" content="Stream your favorite movies and TV series online on MoHiFlix.">
-    <meta name="keywords" content="MoHiFlix, movies online, streaming, mohiflix.com">
+    
+    <meta name="description" content="Stream your favorite movies and TV series online on MoHiFlix. High quality streaming for the latest entertainment.">
+    <meta name="keywords" content="MoHiFlix, movies online, watch tv shows, streaming, mohiflix.com">
     <meta name="author" content="MoHiFlix">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://mohiflix.com/" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
     <link rel="icon" type="image/png" href="Logo.png">
     <link rel="stylesheet" href="style.css">
-    <script src="https://demolitionculpritrape.com/78/cb/fd/78cbfd51dea8ffc25011b49782b04528.js"></script>
 </head>
 <body>
     <header>
         <div class="logo" onclick="location.reload()" style="cursor:pointer">
             <img src="Logo.png" alt="MoHiFlix Logo" class="header-logo">
-            <span class="logo-text">MOHIFLIX</span>
+            <span class="logo-text">MoHiFlix</span>
         </div>
-        </header>
+        
+        <select id="genreSelect">
+            <option value="">All Genres</option>
+            <option value="28">Action</option>
+            <option value="12">Adventure</option>
+            <option value="16">Animation</option>
+            <option value="35">Comedy</option>
+            <option value="80">Crime</option>
+            <option value="99">Documentary</option>
+            <option value="18">Drama</option>
+            <option value="10751">Family</option>
+            <option value="14">Fantasy</option>
+            <option value="36">History</option>
+            <option value="27">Horror</option>
+            <option value="10402">Music</option>
+            <option value="9648">Mystery</option>
+            <option value="10749">Romance</option>
+            <option value="878">Sci-Fi</option>
+            <option value="10770">TV Movie</option>
+            <option value="53">Thriller</option>
+            <option value="10752">War</option>
+            <option value="37">Western</option>
+        </select>
+
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search Movies/TV Shows...">
+            <button id="searchBtn">Search</button>
+        </div>
+    </header>
+
+    <div class="filter-bar">
+        <button id="movieFilter" class="active" onclick="setType('movie')">Movies</button>
+        <button id="tvFilter" onclick="setType('tv')">TV Shows</button>
+    </div>
+
+    <div id="movies"></div>
+
+    <div class="pagination">
+        <button id="loadMore">Load More</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 MoHiFlix. All rights reserved.</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
