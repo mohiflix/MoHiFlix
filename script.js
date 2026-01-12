@@ -79,3 +79,65 @@ genreSelect.onchange = (e) => {
 
 document.getElementById('searchBtn').onclick = () => fetchContent();
 window.onload = () => fetchContent();
+
+// --- Additional Code for Indian and Bangladeshi Content Priority ---
+
+// Indian (IN) ebong Bangladeshi (BD) content priority dewar jonno fetch function ke modify kora holo
+async function fetchRegionalContent(isNew = true) {
+    if (isNew) {
+        currentPage = 1;
+        movieContainer.innerHTML = '';
+    }
+
+    const query = searchInput.value.trim();
+    
+    // Jodi search kora hoy, tobe ager logic e cholbe
+    if (query) {
+        fetchContent(isNew);
+        return;
+    }
+
+    // Indian ebong Bangladeshi content alada bhabe fetch korar jonno regions
+    const regions = ['IN', 'BD'];
+    
+    for (const region of regions) {
+        let url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_origin_country=${region}&with_genres=${currentGenre}&sort_by=popularity.desc`;
+        
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            if (data.results.length > 0) {
+                renderContent(data.results);
+            }
+        } catch (error) {
+            console.error(`Error fetching ${region} content:`, error);
+        }
+    }
+}
+
+// Default load e regional content dekhate window.onload update kora holo
+window.onload = () => fetchRegionalContent();
+
+// Load More button o regional content load korbe
+loadMoreBtn.onclick = () => {
+    currentPage++;
+    fetchRegionalContent(false);
+};
+
+// Genre change holeo regional focus thakbe
+genreSelect.onchange = (e) => {
+    currentGenre = e.target.value;
+    fetchRegionalContent();
+};
+
+// Type change (Movie/TV) holeo regional focus thakbe
+function changeTypeWithRegion(type) {
+    currentType = type;
+    searchInput.value = '';
+    document.getElementById('movieBtn').classList.toggle('active', type === 'movie');
+    document.getElementById('tvBtn').classList.toggle('active', type === 'tv');
+    fetchRegionalContent();
+}
+
+// Ager function ke overwrite na kore global reference update
+window.changeType = changeTypeWithRegion;
