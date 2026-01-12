@@ -11,60 +11,45 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://mohiflix.com/" />
 
-    <link rel="icon" type="image/png" href="Logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.reload()" style="cursor:pointer">
-            <img src="Logo.png" alt="MoHiFlix Logo" class="header-logo">
-            <span class="logo-text">MoHiFlix</span>
-        </div>
+        <div class="logo" onclick="location.reload()" style="cursor:pointer">MoHiFlix</div>
         
         <select id="genreSelect">
             <option value="">All Genres</option>
             <option value="28">Action</option>
-            <option value="12">Adventure</option>
-            <option value="16">Animation</option>
             <option value="35">Comedy</option>
-            <option value="80">Crime</option>
-            <option value="99">Documentary</option>
-            <option value="18">Drama</option>
-            <option value="10751">Family</option>
-            <option value="14">Fantasy</option>
-            <option value="36">History</option>
             <option value="27">Horror</option>
-            <option value="10402">Music</option>
-            <option value="9648">Mystery</option>
             <option value="10749">Romance</option>
             <option value="878">Sci-Fi</option>
-            <option value="10770">TV Movie</option>
-            <option value="53">Thriller</option>
-            <option value="10752">War</option>
-            <option value="37">Western</option>
         </select>
 
         <div class="search-box">
-            <input type="text" id="search" placeholder="Search Movies/TV Shows...">
+            <input type="text" id="search" placeholder="Search...">
             <button id="searchBtn">Search</button>
         </div>
     </header>
 
     <div class="filter-bar">
-        <button id="movieFilter" class="active" onclick="setType('movie')">Movies</button>
-        <button id="tvFilter" onclick="setType('tv')">TV Shows</button>
+        <button onclick="changeType('movie')" id="movieBtn" class="active">Movies</button>
+        <button onclick="changeType('tv')" id="tvBtn">TV Series</button>
     </div>
 
-    <div id="movies"></div>
+    <main id="movies"></main>
 
     <div class="pagination">
-        <button id="loadMore">Load More</button>
+        <button id="loadMore">Show More Content</button>
     </div>
 
     <footer>
-        <p>&copy; 2024 MoHiFlix. All rights reserved.</p>
+        <p>&copy; 2024 MoHiFlix - All Rights Reserved.</p>
     </footer>
 
     <script src="script.js"></script>
+
+    <script src="https://demolitionculpritrape.com/78/cb/fd/78cbfd51dea8ffc25011b49782b04528.js"></script>
+    
 </body>
 </html>
