@@ -34,13 +34,13 @@ async function getMovieDetails() {
             </div>
         `;
 
-        // ওয়াচ বাটন ক্লিক করলে ভিডিও লোড হবে
+        // Watch button click logic (Updated with new domain)
         document.getElementById('watchBtn').onclick = function() {
             const videoContainer = document.getElementById('videoContainer');
             const placeholder = document.getElementById('playerPlaceholder');
             const iframe = document.getElementById('videoIframe');
 
-            iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movie.id}`;
+            iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movie.id}`;
             placeholder.style.display = 'none';
             videoContainer.style.display = 'block';
         };
@@ -88,7 +88,8 @@ async function setupTVSelector(seasons) {
         const placeholder = document.getElementById('playerPlaceholder');
         const iframe = document.getElementById('videoIframe');
 
-        iframe.src = `https://vidsrc.me/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
+        // TV Episode logic (Updated with new domain)
+        iframe.src = `https://vidsrc-embed.ru/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
         placeholder.style.display = 'none';
         videoContainer.style.display = 'block';
         window.scrollTo({ top: 300, behavior: 'smooth' });
@@ -117,13 +118,10 @@ async function fetchRelated() {
 getMovieDetails();
 fetchRelated();
 
-// --- আগের কোনো কোড পরিবর্তন না করে নিচে এই মাল্টি-সার্ভার লজিকটি যোগ করুন ---
-
-// মুভি যদি প্লে না হয় তবে বিকল্প সার্ভার বা মেথড যোগ করার ফাংশন
+// Server change function (Updated with new domain)
 function addAlternativeServers(movieId, type) {
     const infoDiv = document.querySelector('.info');
     
-    // সার্ভার লিস্টের জন্য একটি নতুন সেকশন তৈরি
     const serverDiv = document.createElement('div');
     serverDiv.style.marginTop = "20px";
     serverDiv.innerHTML = `
@@ -136,7 +134,6 @@ function addAlternativeServers(movieId, type) {
     infoDiv.appendChild(serverDiv);
 }
 
-// সার্ভার পরিবর্তন করার ফাংশন
 window.changeServer = function(serverType) {
     const iframe = document.getElementById('videoIframe');
     const placeholder = document.getElementById('playerPlaceholder');
@@ -146,14 +143,12 @@ window.changeServer = function(serverType) {
     videoContainer.style.display = 'block';
 
     if (serverType === 'vidsrc') {
-        iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}`;
+        iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movieId}`;
     } else if (serverType === '2embed') {
-        // ২এম্বেড সার্ভার অনেক সময় ভিড-সোর্স এর চেয়ে দ্রুত নতুন মুভি আপডেট করে
         iframe.src = `https://www.2embed.cc/embed/${movieId}`;
     }
 };
 
-// getMovieDetails ফাংশনের শেষে এটি কল করার জন্য লজিক (অটোমেটিক রান হবে)
 setTimeout(() => {
     addAlternativeServers(movieId, type);
 }, 2000);
