@@ -35,10 +35,10 @@ async function fetchMovies() {
     let url = "";
     
     if (searchQuery) {
-        url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${searchQuery}&page=${currentPage}`;
+        url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${encodeURIComponent(searchQuery)}&page=${currentPage}`;
     } else {
-        // Priority for Hindi (hi), Bengali (bn), Tamil (ta), Telugu (te)
-        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}&with_original_language=hi|bn|ta|te&sort_by=popularity.desc`;
+        // Correct language filter for Indian (Hindi, Tamil, Telugu) and Bengali content
+        url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}&with_original_language=hi,bn,ta,te&sort_by=popularity.desc`;
     }
 
     try {
@@ -53,6 +53,11 @@ async function fetchMovies() {
 function displayMovies(movies, clear) {
     const container = document.getElementById('movies');
     if (clear) container.innerHTML = '';
+
+    if (!movies || movies.length === 0) {
+        container.innerHTML = '<p style="text-align:center; width:100%;">No content found.</p>';
+        return;
+    }
 
     movies.forEach(movie => {
         const movieCard = document.createElement('div');
