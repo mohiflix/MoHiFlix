@@ -8,7 +8,6 @@ let currentGenre = '';
 let searchQuery = '';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial Load - prioritizing Indian/Bengali content
     fetchMovies();
 });
 
@@ -20,14 +19,12 @@ function setType(type) {
     fetchMovies();
 }
 
-// Genre selection
 document.getElementById('genreSelect').addEventListener('change', (e) => {
     currentGenre = e.target.value;
     currentPage = 1;
     fetchMovies();
 });
 
-// Search functionality
 document.getElementById('searchBtn').addEventListener('click', () => {
     searchQuery = document.getElementById('search').value;
     currentPage = 1;
@@ -40,8 +37,7 @@ async function fetchMovies() {
     if (searchQuery) {
         url = `${BASE_URL}/search/${currentType}?api_key=${API_KEY}&query=${searchQuery}&page=${currentPage}`;
     } else {
-        // Adding regional language support to the discover URL
-        // hi = Hindi, bn = Bengali, ta = Tamil, te = Telugu
+        // Priority for Hindi (hi), Bengali (bn), Tamil (ta), Telugu (te)
         url = `${BASE_URL}/discover/${currentType}?api_key=${API_KEY}&page=${currentPage}&with_genres=${currentGenre}&with_original_language=hi|bn|ta|te&sort_by=popularity.desc`;
     }
 
