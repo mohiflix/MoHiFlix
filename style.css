@@ -1,9 +1,8 @@
 /* =========================================
-   MoHiFlix Premium Style Sheet (Netflix Style)
+   MoHiFlix Premium Style Sheet
    ========================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-
+/* General Reset */
 body { 
     background: #080808; 
     color: white; 
@@ -13,8 +12,9 @@ body {
     overflow-x: hidden;
 }
 
+/* Header Section */
 header { 
-    background: rgba(0, 0, 0, 0.95); 
+    background: #000; 
     padding: 10px 5%; 
     display: flex; 
     justify-content: space-between; 
@@ -23,67 +23,65 @@ header {
     top: 0; 
     z-index: 1000; 
     border-bottom: 1px solid #222; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* Logo Section Styling */
 .logo { 
     display: flex;
     align-items: center;
-    gap: 5px; 
-    text-decoration: none;
+    gap: 8px; /* লোগো এবং লেখার মাঝে গ্যাপ */
+    cursor: pointer; 
 }
 
+/* Logo Image Styling */
 .header-logo {
-    height: 35px; /* লোগো ইমেজের সাইজ */
+    height: 40px; /* লোগো ইমেজ সাইজ */
     width: auto;
     object-fit: contain;
 }
 
-/* Netflix Style Text */
+/* New Logo Text Styling */
 .logo-text {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    color: #e50914; /* Netflix Red */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 0.5px;
+    /* আপনি চাইলে এখানে আলাদা ফন্ট বা স্টাইল দিতে পারেন */
 }
 
 /* Genre Dropdown & Search Box */
 #genreSelect { 
-    background: #141414; 
+    background: #1a1a1a; 
     color: white; 
     border: 1px solid #333; 
     padding: 8px 12px; 
-    border-radius: 4px; 
+    border-radius: 5px; 
     outline: none;
     cursor: pointer;
-    font-weight: bold;
 }
 
 .search-box { display: flex; }
 .search-box input { 
     padding: 10px 15px; 
     width: 200px; 
-    border: 1px solid #333; 
-    background: rgba(0,0,0,0.75); 
+    border: none; 
+    background: #1a1a1a; 
     color: white; 
-    border-radius: 4px 0 0 4px; 
+    border-radius: 5px 0 0 5px; 
+    border: 1px solid #333;
+    border-right: none;
 }
 #searchBtn { 
     padding: 10px 20px; 
     background: #e50914; 
     color: white; 
     border: none; 
-    border-radius: 0 4px 4px 0; 
+    border-radius: 0 5px 5px 0; 
     cursor: pointer; 
     font-weight: bold;
-    transition: 0.2s ease;
+    transition: 0.3s;
 }
-#searchBtn:hover { background: #f40612; }
+#searchBtn:hover { background: #b20710; }
 
 /* Filter Bar */
 .filter-bar { 
@@ -94,38 +92,42 @@ header {
 }
 .filter-bar button { 
     background: transparent; 
-    border: 1px solid #555; 
-    color: #fff; 
-    padding: 8px 25px; 
+    border: 2px solid #e50914; 
+    color: white; 
+    padding: 10px 30px; 
     cursor: pointer; 
-    border-radius: 4px; 
+    border-radius: 30px; 
     font-weight: bold; 
     transition: 0.3s ease; 
 }
 .filter-bar button.active { 
     background: #e50914; 
-    border-color: #e50914;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
 }
 
 /* Movie Grid */
 #movies, #relatedMovies { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-    gap: 20px; 
+    gap: 25px; 
     padding: 0 5% 40px; 
 }
 
 /* Movie Card */
 .movie-card { 
-    background: #181818; 
-    border-radius: 8px; 
+    background: #111; 
+    border-radius: 12px; 
     overflow: hidden; 
-    transition: transform 0.3s ease; 
-    cursor: pointer;
+    transition: all 0.3s ease; 
+    border: 1px solid #222; 
+    cursor: pointer; 
+    text-align: center;
+    position: relative;
 }
 .movie-card:hover { 
-    transform: scale(1.05);
-    z-index: 2;
+    transform: translateY(-10px); 
+    border-color: #e50914; 
+    box-shadow: 0 10px 25px rgba(229, 9, 20, 0.3);
 }
 .movie-card img { 
     width: 100%; 
@@ -134,8 +136,8 @@ header {
 }
 .movie-card h3 { 
     padding: 10px; 
-    font-size: 0.85rem; 
-    color: #e5e5e5; 
+    font-size: 0.9rem; 
+    color: #fff; 
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis; 
@@ -144,14 +146,16 @@ header {
 /* Pagination */
 .pagination { text-align: center; padding: 40px 0; }
 #loadMore { 
-    padding: 12px 35px; 
+    padding: 14px 40px; 
     background: #e50914; 
     color: white; 
     border: none; 
     cursor: pointer; 
     font-weight: bold; 
-    border-radius: 4px; 
+    border-radius: 8px; 
+    transition: 0.3s; 
 }
+#loadMore:hover { background: #b20710; transform: scale(1.05); }
 
 /* Details Page */
 .details-container { 
@@ -159,58 +163,62 @@ header {
     flex-wrap: wrap; 
     padding: 50px 5%; 
     gap: 40px; 
-    background: linear-gradient(to bottom, #141414, #080808);
+    background: linear-gradient(to bottom, #000, #080808);
 }
 .details-container img { 
-    width: 280px; 
-    border-radius: 8px; 
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    width: 300px; 
+    border-radius: 15px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
 .details-container .info { flex: 1; min-width: 300px; }
-.details-container h1 { font-size: 3rem; margin-bottom: 10px; font-family: 'Bebas Neue', sans-serif; }
-.details-container .overview { font-size: 1.1rem; color: #a3a3a3; line-height: 1.4; }
+.details-container h1 { font-size: 2.5rem; margin-bottom: 10px; }
+.details-container .overview { font-size: 1.1rem; color: #ccc; line-height: 1.6; }
 
 /* Episode Selector */
 .episode-box { 
     padding: 20px 5%; 
-    background: #181818; 
+    background: #111; 
     margin: 20px 5%; 
-    border-radius: 4px; 
+    border-radius: 10px; 
+    border: 1px solid #222;
 }
 .selectors { display: flex; gap: 15px; margin-top: 10px; }
 .selectors select { 
     padding: 10px; 
-    background: #333; 
+    background: #222; 
     color: white; 
-    border: none; 
-    border-radius: 4px; 
+    border: 1px solid #444; 
+    border-radius: 5px; 
     flex: 1;
 }
 
 /* Player */
-#playerContainer { padding: 0 5%; margin-top: 20px; }
+#playerContainer { 
+    padding: 0 5%; 
+    margin-top: 30px; 
+}
 iframe { 
     width: 100%; 
-    height: 550px; 
-    border-radius: 8px; 
-    border: none; 
-    background: #000;
+    height: 500px; 
+    border-radius: 15px; 
+    border: 2px solid #222; 
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.2);
 }
 
 /* Footer */
 footer { 
     text-align: center; 
-    padding: 50px 0; 
-    border-top: 1px solid #333; 
-    color: #808080; 
-    font-size: 0.9rem;
+    padding: 40px 0; 
+    border-top: 1px solid #222; 
+    margin-top: 50px; 
+    color: #666; 
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    header { flex-direction: column; gap: 15px; padding: 15px; }
+    header { flex-direction: column; gap: 15px; padding: 20px; }
     .search-box { width: 100%; }
     .search-box input { width: 100%; }
-    iframe { height: 250px; }
-    .details-container h1 { font-size: 2rem; }
+    iframe { height: 300px; }
+    .details-container { text-align: center; justify-content: center; }
 }
