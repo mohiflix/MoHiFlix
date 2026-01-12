@@ -29,14 +29,24 @@ header {
 .logo { 
     display: flex;
     align-items: center;
+    gap: 8px; /* লোগো এবং লেখার মাঝে গ্যাপ */
     cursor: pointer; 
 }
 
 /* Logo Image Styling */
 .header-logo {
-    height: 45px; /* Adjust height to fit your navbar */
+    height: 40px; /* লোগো ইমেজ সাইজ */
     width: auto;
     object-fit: contain;
+}
+
+/* New Logo Text Styling */
+.logo-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 0.5px;
+    /* আপনি চাইলে এখানে আলাদা ফন্ট বা স্টাইল দিতে পারেন */
 }
 
 /* Genre Dropdown & Search Box */
@@ -73,7 +83,7 @@ header {
 }
 #searchBtn:hover { background: #b20710; }
 
-/* Filter Bar (Movies vs TV) */
+/* Filter Bar */
 .filter-bar { 
     display: flex; 
     justify-content: center; 
@@ -95,7 +105,7 @@ header {
     box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
 }
 
-/* Movie Grid Layout */
+/* Movie Grid */
 #movies, #relatedMovies { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -103,7 +113,7 @@ header {
     padding: 0 5% 40px; 
 }
 
-/* Movie Card Design */
+/* Movie Card */
 .movie-card { 
     background: #111; 
     border-radius: 12px; 
@@ -133,7 +143,7 @@ header {
     text-overflow: ellipsis; 
 }
 
-/* Pagination (Load More Button) */
+/* Pagination */
 .pagination { text-align: center; padding: 40px 0; }
 #loadMore { 
     padding: 14px 40px; 
@@ -147,7 +157,7 @@ header {
 }
 #loadMore:hover { background: #b20710; transform: scale(1.05); }
 
-/* Details Page Layout */
+/* Details Page */
 .details-container { 
     display: flex; 
     flex-wrap: wrap; 
@@ -164,7 +174,7 @@ header {
 .details-container h1 { font-size: 2.5rem; margin-bottom: 10px; }
 .details-container .overview { font-size: 1.1rem; color: #ccc; line-height: 1.6; }
 
-/* TV Show Episode Selector */
+/* Episode Selector */
 .episode-box { 
     padding: 20px 5%; 
     background: #111; 
@@ -182,7 +192,7 @@ header {
     flex: 1;
 }
 
-/* Video Player Styling */
+/* Player */
 #playerContainer { 
     padding: 0 5%; 
     margin-top: 30px; 
@@ -195,7 +205,7 @@ iframe {
     box-shadow: 0 0 30px rgba(229, 9, 20, 0.2);
 }
 
-/* Footer Section */
+/* Footer */
 footer { 
     text-align: center; 
     padding: 40px 0; 
@@ -204,7 +214,7 @@ footer {
     color: #666; 
 }
 
-/* Mobile Responsiveness */
+/* Responsive */
 @media (max-width: 768px) {
     header { flex-direction: column; gap: 15px; padding: 20px; }
     .search-box { width: 100%; }
