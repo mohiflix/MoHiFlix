@@ -23,9 +23,9 @@ async function getMovieDetails() {
                 
                 <div id="playerPlaceholder" style="margin-top: 30px; text-align: center; background: #111; padding: 50px 20px; border-radius: 10px; border: 1px solid #333;">
                     <button id="watchBtn" style="background: #e50914; color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 20px; box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4); transition: 0.3s;">
-                        ▶ Watch Now (Hindi/Eng)
+                        ▶ Watch in Hindi (Vega Style)
                     </button>
-                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Select Server below for Hindi Dubbed</p>
+                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Select Server 1 for Multi-Audio/Hindi</p>
                 </div>
 
                 <div id="videoContainer" style="display: none; margin-top: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
@@ -35,7 +35,7 @@ async function getMovieDetails() {
         `;
 
         document.getElementById('watchBtn').onclick = function() {
-            changeServer('hindi_server'); // Default click will try Hindi server first
+            changeServer('vega_server'); 
         };
 
         if (type === 'tv') {
@@ -46,6 +46,7 @@ async function getMovieDetails() {
     }
 }
 
+// TV Selector লজিক ঠিক রাখা হয়েছে
 async function setupTVSelector(seasons) {
     epSelector.style.display = 'block';
     const sSelect = document.getElementById('seasonNum');
@@ -77,7 +78,7 @@ async function setupTVSelector(seasons) {
     await updateEpisodes();
 
     document.getElementById('updatePlayer').onclick = () => {
-        changeServer('vidsrc');
+        changeServer('vega_server');
         window.scrollTo({ top: 300, behavior: 'smooth' });
     };
 }
@@ -108,11 +109,11 @@ function addAlternativeServers() {
     const serverDiv = document.createElement('div');
     serverDiv.style.marginTop = "25px";
     serverDiv.innerHTML = `
-        <h4 style="color: #e50914; margin-bottom: 12px; font-size: 16px;">Server Options (VegaMovies Style):</h4>
+        <h4 style="color: #e50914; margin-bottom: 12px; font-size: 16px;">Available Servers (For Hindi Dubbed):</h4>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button onclick="changeServer('hindi_server')" style="background: #e50914; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">Server 1 (Hindi Dubbed)</button>
-            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 2 (Multi-Audio)</button>
-            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 3 (English/Global)</button>
+            <button onclick="changeServer('vega_server')" style="background: #e50914; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">Server 1 (Multi-Audio)</button>
+            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 2 (English)</button>
+            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 3 (Backup)</button>
         </div>
     `;
     infoDiv.appendChild(serverDiv);
@@ -122,21 +123,23 @@ window.changeServer = function(serverType) {
     const iframe = document.getElementById('videoIframe');
     const placeholder = document.getElementById('playerPlaceholder');
     const videoContainer = document.getElementById('videoContainer');
-    const sSelect = document.getElementById('seasonNum');
-    const eSelect = document.getElementById('episodeNum');
+    const sNum = document.getElementById('seasonNum') ? document.getElementById('seasonNum').value : 1;
+    const eNum = document.getElementById('episodeNum') ? document.getElementById('episodeNum').value : 1;
     
     placeholder.style.display = 'none';
     videoContainer.style.display = 'block';
 
-    if (serverType === 'hindi_server') {
-        // Multi-audio and Hindi Focused Server
-        iframe.src = `https://vidsrc.pro/embed/${type}/${movieId}${type === 'tv' ? `/${sSelect.value}/${eSelect.value}` : ''}`;
+    if (serverType === 'vega_server') {
+        // Vidsrc.pro is the best alternative to get VegaMovies style content
+        iframe.src = type === 'movie' 
+            ? `https://vidsrc.pro/embed/movie/${movieId}` 
+            : `https://vidsrc.pro/embed/tv/${movieId}/${sNum}/${eNum}`;
     } else if (serverType === 'vidsrc') {
-        iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}${type === 'tv' ? `&season=${sSelect.value}&episode=${eSelect.value}` : ''}`;
+        iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}${type === 'tv' ? `&season=${sNum}&episode=${eNum}` : ''}`;
     } else if (serverType === '2embed') {
         iframe.src = type === 'movie' 
             ? `https://www.2embed.cc/embed/${movieId}` 
-            : `https://www.2embed.cc/embedtv/${movieId}&s=${sSelect.value}&e=${eSelect.value}`;
+            : `https://www.2embed.cc/embedtv/${movieId}&s=${sNum}&e=${eNum}`;
     }
 };
 
