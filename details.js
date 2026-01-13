@@ -34,7 +34,6 @@ async function getMovieDetails() {
             </div>
         `;
 
-        // Watch button click logic (Updated with new domain)
         document.getElementById('watchBtn').onclick = function() {
             const videoContainer = document.getElementById('videoContainer');
             const placeholder = document.getElementById('playerPlaceholder');
@@ -88,7 +87,6 @@ async function setupTVSelector(seasons) {
         const placeholder = document.getElementById('playerPlaceholder');
         const iframe = document.getElementById('videoIframe');
 
-        // TV Episode logic (Updated with new domain)
         iframe.src = `https://vidsrc-embed.ru/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
         placeholder.style.display = 'none';
         videoContainer.style.display = 'block';
@@ -118,17 +116,18 @@ async function fetchRelated() {
 getMovieDetails();
 fetchRelated();
 
-// Server change function (Updated with new domain)
+// Server change function with 3 servers
 function addAlternativeServers(movieId, type) {
     const infoDiv = document.querySelector('.info');
     
     const serverDiv = document.createElement('div');
     serverDiv.style.marginTop = "20px";
     serverDiv.innerHTML = `
-        <h4 style="color: #e50914; margin-bottom: 10px;">If server 1 doesn't work, try Server 2:</h4>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 1 (Default)</button>
-            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 2 (Alternative)</button>
+        <h4 style="color: #e50914; margin-bottom: 10px;">Try Other Servers (For Hindi Dubbed use Server 3):</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 1 (Global)</button>
+            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 2 (Multi-Lang)</button>
+            <button onclick="changeServer('hindi_dubbed')" style="background: #e50914; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Server 3 (Hindi Dubbed)</button>
         </div>
     `;
     infoDiv.appendChild(serverDiv);
@@ -145,7 +144,11 @@ window.changeServer = function(serverType) {
     if (serverType === 'vidsrc') {
         iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movieId}`;
     } else if (serverType === '2embed') {
-        iframe.src = `https://www.2embed.cc/embed/${movieId}`;
+        iframe.src = type === 'movie' 
+            ? `https://www.2embed.cc/embed/${movieId}` 
+            : `https://www.2embed.cc/embedtv/${movieId}&s=${document.getElementById('seasonNum').value}&e=${document.getElementById('episodeNum').value}`;
+    } else if (serverType === 'hindi_dubbed') {
+        iframe.src = `https://superflixapi.xyz/embed/${type}/?tmdb=${movieId}`;
     }
 };
 
