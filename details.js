@@ -23,9 +23,9 @@ async function getMovieDetails() {
                 
                 <div id="playerPlaceholder" style="margin-top: 30px; text-align: center; background: #111; padding: 50px 20px; border-radius: 10px; border: 1px solid #333;">
                     <button id="watchBtn" style="background: #e50914; color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 20px; box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4); transition: 0.3s;">
-                        ▶ Watch ${type === 'movie' ? 'Movie' : 'Series'} Now
+                        ▶ Watch Now (Hindi/Eng)
                     </button>
-                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Click to stream in HD Quality</p>
+                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Select Server below for Hindi Dubbed</p>
                 </div>
 
                 <div id="videoContainer" style="display: none; margin-top: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
@@ -35,14 +35,7 @@ async function getMovieDetails() {
         `;
 
         document.getElementById('watchBtn').onclick = function() {
-            const videoContainer = document.getElementById('videoContainer');
-            const placeholder = document.getElementById('playerPlaceholder');
-            const iframe = document.getElementById('videoIframe');
-
-            // Default Player: VidSrc
-            iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movie.id}`;
-            placeholder.style.display = 'none';
-            videoContainer.style.display = 'block';
+            changeServer('hindi_server'); // Default click will try Hindi server first
         };
 
         if (type === 'tv') {
@@ -84,13 +77,7 @@ async function setupTVSelector(seasons) {
     await updateEpisodes();
 
     document.getElementById('updatePlayer').onclick = () => {
-        const videoContainer = document.getElementById('videoContainer');
-        const placeholder = document.getElementById('playerPlaceholder');
-        const iframe = document.getElementById('videoIframe');
-
-        iframe.src = `https://vidsrc-embed.ru/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
-        placeholder.style.display = 'none';
-        videoContainer.style.display = 'block';
+        changeServer('vidsrc');
         window.scrollTo({ top: 300, behavior: 'smooth' });
     };
 }
@@ -114,23 +101,18 @@ async function fetchRelated() {
     });
 }
 
-getMovieDetails();
-fetchRelated();
-
-// --- 3-Server Logic specifically for Multi-language & Hindi Dubbed ---
-
-function addAlternativeServers(movieId, type) {
+function addAlternativeServers() {
     const infoDiv = document.querySelector('.info');
     if (!infoDiv) return;
 
     const serverDiv = document.createElement('div');
     serverDiv.style.marginTop = "25px";
     serverDiv.innerHTML = `
-        <h4 style="color: #e50914; margin-bottom: 12px; font-size: 16px;">Change Server (For Hindi/Bangla, try Server 2 or 3):</h4>
+        <h4 style="color: #e50914; margin-bottom: 12px; font-size: 16px;">Server Options (VegaMovies Style):</h4>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; transition: 0.3s;">Server 1 (Auto)</button>
-            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; transition: 0.3s;">Server 2 (Multi-Lang)</button>
-            <button onclick="changeServer('hindi_server')" style="background: #e50914; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">Server 3 (Hindi Focus)</button>
+            <button onclick="changeServer('hindi_server')" style="background: #e50914; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">Server 1 (Hindi Dubbed)</button>
+            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 2 (Multi-Audio)</button>
+            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 3 (English/Global)</button>
         </div>
     `;
     infoDiv.appendChild(serverDiv);
@@ -140,24 +122,24 @@ window.changeServer = function(serverType) {
     const iframe = document.getElementById('videoIframe');
     const placeholder = document.getElementById('playerPlaceholder');
     const videoContainer = document.getElementById('videoContainer');
+    const sSelect = document.getElementById('seasonNum');
+    const eSelect = document.getElementById('episodeNum');
     
     placeholder.style.display = 'none';
     videoContainer.style.display = 'block';
 
-    if (serverType === 'vidsrc') {
-        iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movieId}`;
+    if (serverType === 'hindi_server') {
+        // Multi-audio and Hindi Focused Server
+        iframe.src = `https://vidsrc.pro/embed/${type}/${movieId}${type === 'tv' ? `/${sSelect.value}/${eSelect.value}` : ''}`;
+    } else if (serverType === 'vidsrc') {
+        iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}${type === 'tv' ? `&season=${sSelect.value}&episode=${eSelect.value}` : ''}`;
     } else if (serverType === '2embed') {
-        // 2Embed works well for movies with multiple audio tracks
         iframe.src = type === 'movie' 
             ? `https://www.2embed.cc/embed/${movieId}` 
-            : `https://www.2embed.cc/embedtv/${movieId}&s=${document.getElementById('seasonNum').value}&e=${document.getElementById('episodeNum').value}`;
-    } else if (serverType === 'hindi_server') {
-        // Using Superflix with Hindi priority parameter
-        iframe.src = `https://superflixapi.xyz/embed/${type}/?tmdb=${movieId}&ds_lang=hi`;
+            : `https://www.2embed.cc/embedtv/${movieId}&s=${sSelect.value}&e=${eSelect.value}`;
     }
 };
 
-// Delaying server button load slightly to ensure UI is ready
-setTimeout(() => {
-    addAlternativeServers(movieId, type);
-}, 2000);
+getMovieDetails();
+fetchRelated();
+setTimeout(addAlternativeServers, 2000);
