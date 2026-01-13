@@ -23,9 +23,9 @@ async function getMovieDetails() {
                 
                 <div id="playerPlaceholder" style="margin-top: 30px; text-align: center; background: #111; padding: 50px 20px; border-radius: 10px; border: 1px solid #333;">
                     <button id="watchBtn" style="background: #e50914; color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 20px; box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4); transition: 0.3s;">
-                        ▶ Play in Hindi / English
+                        ▶ Watch ${type === 'movie' ? 'Movie' : 'Series'} Now
                     </button>
-                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Select "Hindi Focus" for Dubbed Content</p>
+                    <p style="color: #888; margin-top: 15px; font-size: 14px;">Click to stream in HD Quality</p>
                 </div>
 
                 <div id="videoContainer" style="display: none; margin-top: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
@@ -34,8 +34,15 @@ async function getMovieDetails() {
             </div>
         `;
 
+        // Watch button click logic (Updated with new domain)
         document.getElementById('watchBtn').onclick = function() {
-            changeServer('pro_scraper'); 
+            const videoContainer = document.getElementById('videoContainer');
+            const placeholder = document.getElementById('playerPlaceholder');
+            const iframe = document.getElementById('videoIframe');
+
+            iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movie.id}`;
+            placeholder.style.display = 'none';
+            videoContainer.style.display = 'block';
         };
 
         if (type === 'tv') {
@@ -77,7 +84,14 @@ async function setupTVSelector(seasons) {
     await updateEpisodes();
 
     document.getElementById('updatePlayer').onclick = () => {
-        changeServer('pro_scraper');
+        const videoContainer = document.getElementById('videoContainer');
+        const placeholder = document.getElementById('playerPlaceholder');
+        const iframe = document.getElementById('videoIframe');
+
+        // TV Episode logic (Updated with new domain)
+        iframe.src = `https://vidsrc-embed.ru/embed/tv?tmdb=${movieId}&season=${sSelect.value}&episode=${eSelect.value}`;
+        placeholder.style.display = 'none';
+        videoContainer.style.display = 'block';
         window.scrollTo({ top: 300, behavior: 'smooth' });
     };
 }
@@ -101,18 +115,20 @@ async function fetchRelated() {
     });
 }
 
-function addAlternativeServers() {
-    const infoDiv = document.querySelector('.info');
-    if (!infoDiv) return;
+getMovieDetails();
+fetchRelated();
 
+// Server change function (Updated with new domain)
+function addAlternativeServers(movieId, type) {
+    const infoDiv = document.querySelector('.info');
+    
     const serverDiv = document.createElement('div');
-    serverDiv.style.marginTop = "25px";
+    serverDiv.style.marginTop = "20px";
     serverDiv.innerHTML = `
-        <h4 style="color: #e50914; margin-bottom: 12px; font-size: 16px;">Change Server (Server 1 is Recommended):</h4>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button onclick="changeServer('pro_scraper')" style="background: #e50914; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">Server 1 (Hindi Focus)</button>
-            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 2 (Auto Detect)</button>
-            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer;">Server 3 (External)</button>
+        <h4 style="color: #e50914; margin-bottom: 10px;">If server 1 doesn't work, try Server 2:</h4>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 1 (Default)</button>
+            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 2 (Alternative)</button>
         </div>
     `;
     infoDiv.appendChild(serverDiv);
@@ -122,25 +138,17 @@ window.changeServer = function(serverType) {
     const iframe = document.getElementById('videoIframe');
     const placeholder = document.getElementById('playerPlaceholder');
     const videoContainer = document.getElementById('videoContainer');
-    const sNum = document.getElementById('seasonNum') ? document.getElementById('seasonNum').value : 1;
-    const eNum = document.getElementById('episodeNum') ? document.getElementById('episodeNum').value : 1;
     
     placeholder.style.display = 'none';
     videoContainer.style.display = 'block';
 
-    if (serverType === 'pro_scraper') {
-        iframe.src = type === 'movie' 
-            ? `https://vidsrc.pro/embed/movie/${movieId}` 
-            : `https://vidsrc.pro/embed/tv/${movieId}/${sNum}/${eNum}`;
-    } else if (serverType === 'vidsrc') {
-        iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${movieId}${type === 'tv' ? `&season=${sNum}&episode=${eNum}` : ''}`;
+    if (serverType === 'vidsrc') {
+        iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movieId}`;
     } else if (serverType === '2embed') {
-        iframe.src = type === 'movie' 
-            ? `https://www.2embed.cc/embed/${movieId}` 
-            : `https://www.2embed.cc/embedtv/${movieId}&s=${sNum}&e=${eNum}`;
+        iframe.src = `https://www.2embed.cc/embed/${movieId}`;
     }
 };
 
-getMovieDetails();
-fetchRelated();
-setTimeout(addAlternativeServers, 2000);
+setTimeout(() => {
+    addAlternativeServers(movieId, type);
+}, 2000);
