@@ -39,6 +39,7 @@ async function getMovieDetails() {
             const placeholder = document.getElementById('playerPlaceholder');
             const iframe = document.getElementById('videoIframe');
 
+            // Default Player: VidSrc
             iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movie.id}`;
             placeholder.style.display = 'none';
             videoContainer.style.display = 'block';
@@ -116,18 +117,20 @@ async function fetchRelated() {
 getMovieDetails();
 fetchRelated();
 
-// Server change function with 3 servers
+// --- 3-Server Logic specifically for Multi-language & Hindi Dubbed ---
+
 function addAlternativeServers(movieId, type) {
     const infoDiv = document.querySelector('.info');
-    
+    if (!infoDiv) return;
+
     const serverDiv = document.createElement('div');
-    serverDiv.style.marginTop = "20px";
+    serverDiv.style.marginTop = "25px";
     serverDiv.innerHTML = `
-        <h4 style="color: #e50914; margin-bottom: 10px;">Try Other Servers (For Hindi Dubbed use Server 3):</h4>
+        <h4 style="color: #e50914; margin-bottom: 12px; font-size: 16px;">Change Server (For Hindi/Bangla, try Server 2 or 3):</h4>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 1 (Global)</button>
-            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Server 2 (Multi-Lang)</button>
-            <button onclick="changeServer('hindi_dubbed')" style="background: #e50914; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Server 3 (Hindi Dubbed)</button>
+            <button onclick="changeServer('vidsrc')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; transition: 0.3s;">Server 1 (Auto)</button>
+            <button onclick="changeServer('2embed')" style="background: #333; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; transition: 0.3s;">Server 2 (Multi-Lang)</button>
+            <button onclick="changeServer('hindi_server')" style="background: #e50914; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">Server 3 (Hindi Focus)</button>
         </div>
     `;
     infoDiv.appendChild(serverDiv);
@@ -144,14 +147,17 @@ window.changeServer = function(serverType) {
     if (serverType === 'vidsrc') {
         iframe.src = `https://vidsrc-embed.ru/embed/${type}?tmdb=${movieId}`;
     } else if (serverType === '2embed') {
+        // 2Embed works well for movies with multiple audio tracks
         iframe.src = type === 'movie' 
             ? `https://www.2embed.cc/embed/${movieId}` 
             : `https://www.2embed.cc/embedtv/${movieId}&s=${document.getElementById('seasonNum').value}&e=${document.getElementById('episodeNum').value}`;
-    } else if (serverType === 'hindi_dubbed') {
-        iframe.src = `https://superflixapi.xyz/embed/${type}/?tmdb=${movieId}`;
+    } else if (serverType === 'hindi_server') {
+        // Using Superflix with Hindi priority parameter
+        iframe.src = `https://superflixapi.xyz/embed/${type}/?tmdb=${movieId}&ds_lang=hi`;
     }
 };
 
+// Delaying server button load slightly to ensure UI is ready
 setTimeout(() => {
     addAlternativeServers(movieId, type);
 }, 2000);
